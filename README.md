@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 **| [English](README_en.md) | 简体中文 | [日本語](README_jp.md) |**
 
 # AzurLaneAutoScript
@@ -228,3 +229,6 @@ Alas 仍在活跃开发中，我们会不定期发布未来的工作在 [Issues]
 3，GG明确表明蓝叠模拟器很慢。加上目前水平太菜无法解决蓝叠时常出现的UI Automator2无法使用的问题。加上蓝叠不能导入文件夹+本人网速极慢。因此若出现问题，不作任何支持。
 
 
+=======
+# My Project
+>>>>>>> 2036682c9 (Initial commit)
