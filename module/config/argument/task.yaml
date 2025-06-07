@@ -428,3 +428,8 @@ Tool:
       - AzurLaneUncensored
     GameManager:
       - GameManager
+      - GGHandler
+      - PowerLimit
+    SomethingSpecial:
+      - InfiniteDelay
+      - TurnOffForcedOnSettings

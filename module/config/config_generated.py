@@ -230,6 +230,8 @@ class GeneratedConfig:
     GemsFarming_CommonCV = 'any'  # any, langley, bogue, ranger, hermes
     GemsFarming_ChangeVanguard = 'ship'  # disabled, ship, ship_equip
     GemsFarming_CommonDD = 'any'  # any, favourite, aulick_or_foote, cassin_or_downes, z20_or_z21
+    GemsFarming_ALLowLowVanguardLevel = True
+    GemsFarming_FleetNumberInHardMode = 0  # 0, 1, 2
     GemsFarming_StopIFAutoNotEnsured = True
     GemsFarming_CommissionLimit = True
 
@@ -543,6 +545,32 @@ class GeneratedConfig:
 
     # Group `GameManager`
     GameManager_AutoRestart = True
+
+    # Group `GGHandler`
+    GGHandler_Enabled = False
+    GGHandler_GGMethod = 'u2'  # u2
+    GGHandler_RestartATX = False
+    GGHandler_GGPackageName = 'com.'
+    GGHandler_AutoRestartGG = False
+    GGHandler_RestartEverytime = True
+    GGHandler_RepushLua = True
+    GGHandler_GGMultiplyingFactor = 200
+    GGHandler_Timeout = 120
+    GGHandler_DisabledTask = 'disable_all_dangerous_task'  # disable_all_dangerous_task, disable_guild_and_dangerous, disable_exercise, enable_all
+
+    # Group `PowerLimit`
+    PowerLimit_Exercise = 16500
+    PowerLimit_Raid = 16500
+    PowerLimit_Ash = 16500
+
+    # Group `InfiniteDelay`
+    InfiniteDelay_Commission = False
+    InfiniteDelay_Research = False
+    InfiniteDelay_Reward = False
+
+    # Group `TurnOffForcedOnSettings`
+    TurnOffForcedOnSettings_OpsiMeowfficerFarmingFromOpsiHazard1Leveling = False
+    TurnOffForcedOnSettings_OpsiHazard1LevelingYellowCoinLimit = False
 
     # Group `Oil`
     Oil_Value = 0

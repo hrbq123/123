@@ -13,6 +13,7 @@ from module.config.deep import deep_get, deep_set
 from module.exception import *
 from module.logger import logger
 from module.notify import handle_notify
+from module.gg_handler.gg_handler import GGHandler
 
 
 class AzurLaneAutoScript:
@@ -45,7 +46,12 @@ class AzurLaneAutoScript:
             config = AzurLaneConfig(config_name=self.config_name)
             return config
         except RequestHumanTakeover:
-            logger.critical('Request human takeover')
+            logger.critical('Request human takeover')  #解决部分不推送报错
+            handle_notify(
+                self.config.Error_OnePushConfig,
+                title=f"Alas <{self.config_name}> crashed",
+                content=f"<{self.config_name}> RequestHumanTakeover",
+            )
             exit(1)
         except Exception as e:
             logger.exception(e)
@@ -59,6 +65,14 @@ class AzurLaneAutoScript:
             return device
         except RequestHumanTakeover:
             logger.critical('Request human takeover')
+            handle_notify(                              #解决部分不推送报错（如模拟器未开启
+                self.config.Error_OnePushConfig,
+                title=f"Alas <{self.config_name}> crashed",
+                content=f"<{self.config_name}> RequestHumanTakeover",
+            )
+            exit(1)
+        except EmulatorNotRunningError:
+            logger.critical('EmulatorNotRunningError')
             exit(1)
         except EmulatorNotRunningError:
             logger.critical('EmulatorNotRunningError')
@@ -641,11 +655,24 @@ class AzurLaneAutoScript:
         AzurLaneConfig.is_hoarding_task = False
         return task.command
 
+    def gg_check(self):
+        if deep_get(self.config.data, "GameManager.GGHandler.Enabled"):
+            logger.info("GG is enabled, check gg package name")
+            if deep_get(self.config.data, "GameManager.GGHandler.GGPackageName") in self.device.list_package():
+                logger.info("GG package name exists")
+            else:
+                logger.critical("GG package name doesn't exist, please check your gg setting")
+                logger.critical("友情翻译：你他妈的GG包名填错了，滚去重填！！！")
+                exit(1)
 
     def loop(self):
+        self.gg_check()
         logger.set_file_logger(self.config_name)
         logger.info(f'Start scheduler loop: {self.config_name}')
-
+        # Try forced task_call restart to reset GG status
+        self.checker.wait_until_available()
+        GGHandler(config=self.config, device=self.device).handle_restart_before_tasks()
+        check_fail = 0
         while 1:
             # Check update event from GUI
             if self.stop_event is not None:
@@ -669,7 +696,6 @@ class AzurLaneAutoScript:
             _ = self.device
             self.device.config = self.config
 
-
             # Skip first restart
             if task == 'Restart':
                 if self.is_first_task:
@@ -681,19 +707,35 @@ class AzurLaneAutoScript:
                 del_cached_property(self, 'config')
                 continue
 
-            if self.is_azur and not self.device.app_is_running():
-                self.config.task_call('Restart')
-                self.is_first_task = False
-                continue
-
-
+            # Check GG config before a task begins (to reset temporary config), and decide to enable it.
+            GGHandler(config=self.config, device=self.device).check_config()
+            try:
+                GGHandler(config=self.config, device=self.device).check_then_set_gg_status(inflection.underscore(task))
+                check_fail = 0
+            except GameStuckError:
+                del_cached_property(self, 'config')
+                check_fail += 1
+                if check_fail <= 3:
+                    continue
+                else:
+                    logger.critical('Maybe your emulator died, trying to restart it')
+                    self.device.emulator_start()
 
             # Run
             logger.info(f'Scheduler: Start task `{task}`')
             self.device.stuck_record_clear()
             self.device.click_record_clear()
             logger.hr(task, level=0)
-            success = self.run(inflection.underscore(task))
+            success = True
+            if task in ["Research", "Reward", "Commission"]:
+                InfiniteDelay = deep_get(self.config.data, f"SomethingSpecial.InfiniteDelay.{task}")
+                if InfiniteDelay:
+                    logger.warning(f"Task '{task}' infinite delay: {InfiniteDelay}")
+                    self.config.task_delay(target=datetime.now() + timedelta(hours=6, seconds=-1), task=task)
+                else:
+                    success = self.run(inflection.underscore(task))
+            else:
+                success = self.run(inflection.underscore(task))
             logger.info(f'Scheduler: End task `{task}`')
             self.is_first_task = False
 

@@ -8,6 +8,8 @@ from module.config.utils import (get_nearest_weekday_date,
                                  get_server_next_update,
                                  DEFAULT_TIME,)
 from module.config.config import deep_get
+                                 DEFAULT_TIME,
+                                 deep_get)
 from module.exception import RequestHumanTakeover, GameStuckError, ScriptError
 from module.logger import logger
 from module.map.map_grids import SelectedGrids

@@ -163,9 +163,20 @@ class Screenshot(Adb, WSA, DroidCast, AScreenCap, Scrcpy, NemuIpc, LDOpenGL):
                 Or None for Optimization_ScreenshotInterval, 'combat' for Optimization_CombatScreenshotInterval
         """
         if interval is None:
-            interval = self.config.Optimization_ScreenshotInterval
+            origin = self.config.Optimization_ScreenshotInterval
+            interval = limit_in(origin, 0.1, 2.0)
+            if interval != origin:
+                logger.warning(f'Optimization.ScreenshotInterval {origin} is revised to {interval}')
+                self.config.Optimization_ScreenshotInterval = interval
+            # Allow nemu_ipc to have a lower default
+            if self.config.Emulator_ScreenshotMethod in ['nemu_ipc', 'ldopengl']:
+                interval = limit_in(origin, 0.1, 0.2)
         elif interval == 'combat':
-            interval = self.config.Optimization_CombatScreenshotInterval
+            origin = self.config.Optimization_CombatScreenshotInterval
+            interval = limit_in(origin, 0.3, 5.0)
+            if interval != origin:
+                logger.warning(f'Optimization.CombatScreenshotInterval {origin} is revised to {interval}')
+                self.config.Optimization_CombatScreenshotInterval = interval
         elif isinstance(interval, (int, float)):
             # No limitation for manual set in code
             pass

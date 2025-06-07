@@ -1,3 +1,8 @@
+import re
+import sys
+import json
+import time
+import queue
 import argparse
 import re
 import json
@@ -1328,7 +1333,7 @@ class AlasGUI(Frame):
 
     def run(self) -> None:
         # setup gui
-        set_env(title="Alas", output_animation=False)
+        set_env(title="AlasGG", output_animation=False)
         add_css(filepath_css("alas"))
         if self.is_mobile:
             add_css(filepath_css("alas-mobile"))
