@@ -1,16 +1,17 @@
 import copy
-import datetime
 import operator
 import threading
+from datetime import datetime, timedelta
 
 import pywebio
 
 from module.base.filter import Filter
 from module.config.config_generated import GeneratedConfig
 from module.config.config_manual import ManualConfig, OutputConfig
-from module.config.config_updater import ConfigUpdater
+from module.config.config_updater import ConfigUpdater, ensure_time, get_server_next_update, nearest_future
+from module.config.deep import deep_get, deep_set
+from module.config.utils import DEFAULT_TIME, dict_to_kv, filepath_config, get_os_reset_remain, path_to_arg
 from module.config.watcher import ConfigWatcher
-from module.config.utils import *
 from module.exception import RequestHumanTakeover, ScriptError
 from module.logger import logger
 from module.map.map_grids import SelectedGrids
@@ -242,7 +243,16 @@ class AzurLaneConfig(ConfigUpdater, ManualConfig, GeneratedConfig, ConfigWatcher
         if self.pending_task:
             AzurLaneConfig.is_hoarding_task = False
             logger.info(f"Pending tasks: {[f.command for f in self.pending_task]}")
-            task = self.pending_task[0]
+            pending_task_str = [f.command for f in self.pending_task]
+            if self.pending_task[0].command == "GemsFarming" \
+                    and self.is_task_enabled("OpsiHazard1Leveling") \
+                    and deep_get(self.data, "OpsiHazard1Leveling.HigherPriority.Enable") \
+                    and "OpsiHazard1Leveling" in pending_task_str \
+                    and "GemsFarming" in pending_task_str \
+                    and len(pending_task_str) == 2:
+                task = self.pending_task[1]
+            else:
+                task = self.pending_task[0]
             logger.attr("Task", task)
             return task
         else:
@@ -736,6 +746,19 @@ class AzurLaneConfig(ConfigUpdater, ManualConfig, GeneratedConfig, ConfigWatcher
         backup = ConfigBackup(config=self)
         backup.cover(**kwargs)
         return backup
+    
+    @staticmethod
+    def build_azurlane_config(config, task=None) -> "AzurLaneConfig":
+        if isinstance(config, AzurLaneConfig):
+            conf = config
+            if task is not None:
+                conf.init_task(task)
+        elif isinstance(config, str):
+            conf = AzurLaneConfig(config, task=task)
+        else:
+            logger.warning('AzurLaneConfig.build_azurlane_config received an unknown config, assume it is AzurLaneConfig')
+            conf = config
+        return conf
 
 
 pywebio.output.Output = OutputConfig

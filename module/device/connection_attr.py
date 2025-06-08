@@ -8,7 +8,7 @@ from adbutils import AdbClient, AdbDevice
 from module.base.decorator import cached_property
 from module.config.config import AzurLaneConfig
 from module.config.env import IS_ON_PHONE_CLOUD
-from module.config.utils import deep_iter
+from module.config.deep import deep_iter
 from module.device.method.utils import get_serial_pair
 from module.exception import RequestHumanTakeover
 from module.logger import logger
@@ -158,6 +158,22 @@ class ConnectionAttr:
             return 0
 
     @cached_property
+    def is_tunneled_device(self) -> bool:
+        if self.port != 5555:
+            return False
+
+        host = self.serial.split(':')[0]
+
+        if host.startswith('10.'):
+            return True
+        if host.startswith('172.'):
+            return True
+        if host.startswith('192.'):
+            return True
+
+        return False
+
+    @cached_property
     def is_mumu12_family(self):
         # 127.0.0.1:16XXX
         return 16384 <= self.port <= 17408
@@ -167,6 +183,7 @@ class ConnectionAttr:
         # 127.0.0.1:7555
         # 127.0.0.1:16384 + 32*n
         return self.serial == '127.0.0.1:7555' or self.is_mumu12_family
+
 
     @cached_property
     def is_ldplayer_bluestacks_family(self):

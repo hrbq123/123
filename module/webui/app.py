@@ -1,17 +1,16 @@
-import re
-import sys
-import json
-import time
-import queue
 import argparse
+import re
+import json
+import os
+import queue
 import threading
-
+import time
 from datetime import datetime
 from functools import partial
 from typing import Dict, List, Optional
-
 # Import fake module before import pywebio to avoid importing unnecessary module PIL
 from module.webui.fake_pil_module import import_fake_pil_module
+
 import_fake_pil_module()
 
 from pywebio import config as webconfig
@@ -39,17 +38,15 @@ from pywebio.output import (
     use_scope,
 )
 from pywebio.pin import pin, pin_on_change
-from pywebio.session import (download, go_app, info, local, register_thread, run_js, set_env)
+from pywebio.session import download, go_app, info, local, register_thread, run_js, set_env
 
 import module.webui.lang as lang
 from module.config.config import AzurLaneConfig, Function
+from module.config.deep import deep_get, deep_iter, deep_set
 from module.config.env import IS_ON_PHONE_CLOUD
 from module.config.utils import (
     alas_instance,
     alas_template,
-    deep_get,
-    deep_iter,
-    deep_set,
     dict_to_kv,
     filepath_args,
     filepath_config,
@@ -58,6 +55,7 @@ from module.config.utils import (
 from module.config.utils import time_delta
 from module.log_res.log_res import LogRes
 from module.logger import logger
+from module.notify import handle_notify
 from module.ocr.rpc import start_ocr_server_process, stop_ocr_server_process
 from module.submodule.submodule import load_config
 from module.submodule.utils import get_config_mod
@@ -66,9 +64,10 @@ from module.webui.discord_presence import close_discord_rpc, init_discord_rpc
 from module.webui.fastapi import asgi_app
 from module.webui.lang import _t, t
 from module.webui.patch import patch_executor
-from module.webui.pin import put_input, put_select
+from module.webui.pin import put_input, put_select, pin_update
 from module.webui.process_manager import ProcessManager
 from module.webui.remote_access import RemoteAccess
+from module.webui.restart_tracker import get_restart_count, set_restart_count, reset_restart_count
 from module.webui.setting import State
 from module.webui.updater import updater
 from module.webui.utils import (
@@ -143,6 +142,11 @@ class AlasGUI(Frame):
         self.alas_mod = "alas"
         self.alas_config = AzurLaneConfig("template")
         self.initial()
+        # rendered state cache
+        self.rendered_cache = []
+        self.inst_cache = []
+        self.load_home = False
+        self.af_flag = False
 
     @use_scope("aside", clear=True)
     def set_aside(self) -> None:
@@ -152,12 +156,11 @@ class AlasGUI(Frame):
             buttons=[{"label": t("Gui.Aside.Home"), "value": "Home", "color": "aside"}],
             onclick=[self.ui_develop],
         )
-        for name in alas_instance():
-            put_icon_buttons(
-                Icon.RUN,
-                buttons=[{"label": name, "value": name, "color": "aside"}],
-                onclick=self.ui_alas,
-            )
+        put_scope("aside_instance",[
+            put_scope(f"alas-instance-{i}",[])
+            for i, _ in enumerate(alas_instance())
+        ])
+        self.set_aside_status()
         put_icon_buttons(
             Icon.SETTING,
             buttons=[
@@ -169,6 +172,51 @@ class AlasGUI(Frame):
             ],
             onclick=[lambda: go_app("manage", new_window=False)],
         )
+
+        current_date = datetime.now().date()
+        if current_date.month == 4 and current_date.day == 1:
+            self.af_flag = True
+
+    @use_scope("aside_instance")
+    def set_aside_status(self) -> None:
+        flag = True       
+        def update(name, seq):
+            with use_scope(f"alas-instance-{seq}", clear=True):
+                icon_html = Icon.RUN
+                rendered_state = ProcessManager.get_manager(inst).state
+                if rendered_state == 1 and self.af_flag:
+                    icon_html = icon_html[:31] + ' anim-rotate' + icon_html[31:]
+                put_icon_buttons(
+                    icon_html,
+                    buttons=[{"label": name, "value": name, "color": "aside"}],
+                    onclick=self.ui_alas,
+                )
+            return rendered_state
+        
+        if not len(self.rendered_cache) or self.load_home:
+            # Reload when add/delete new instance | first start app.py | go to HomePage (HomePage load call force reload)
+            flag = False
+            self.inst_cache.clear()
+            self.inst_cache = alas_instance()
+        if flag:
+            for index, inst in enumerate(self.inst_cache):
+                # Check for state change
+                state = ProcessManager.get_manager(inst).state
+                if state != self.rendered_cache[index]:
+                    self.rendered_cache[index] = update(inst, index)
+                    flag = False
+        else:
+            self.rendered_cache.clear()
+            clear("aside_instance")
+            for index, inst in enumerate(self.inst_cache):
+                self.rendered_cache.append(update(inst, index))
+            self.load_home = False
+        if not flag:
+            # Redraw lost focus, now focus on aside button
+            aside_name = get_localstorage("aside")
+            self.active_button("aside", aside_name)
+        
+        return
 
     @use_scope("header_status")
     def set_status(self, state: int) -> None:
@@ -1217,6 +1265,7 @@ class AlasGUI(Frame):
 
     def show(self) -> None:
         self._show()
+        self.load_home = True
         self.set_aside()
         self.init_aside(name="Home")
         self.dev_set_menu()
@@ -1364,6 +1413,7 @@ class AlasGUI(Frame):
         )
 
         self.task_handler.add(self.state_switch.g(), 2)
+        self.task_handler.add(self.set_aside_status, 2)
         self.task_handler.add(visibility_state_switch.g(), 15)
         self.task_handler.add(update_switch.g(), 1)
         self.task_handler.start()
@@ -1566,6 +1616,50 @@ def clearup():
     logger.info("Alas closed.")
 
 
+g_instance_watcher: threading.Thread = None
+g_instance_restart_too_many_times: List[str]
+
+def instance_watcher_thread():
+    global g_instance_restart_too_many_times
+    while True:
+        time.sleep(10)
+        try:
+            for instance in alas_instance():
+                ins = ProcessManager.get_manager(instance)
+                config = AzurLaneConfig(ins.config_name)
+
+                enabled = deep_get(config.data, "Restart.InstanceRestart.Enabled", False)
+                if not enabled:
+                    continue
+
+                if ins.state == 3 and not ins.alive:
+                    attempts = deep_get(config.data, "Restart.InstanceRestart.AttemptsToRestart", 3)
+                    has_restarted = get_restart_count(ins.config_name)
+                    enable_notify = deep_get(config.data, "Restart.InstanceRestart.NotifyWhenAutoRestart", False)
+                    push_config = deep_get(config.data, "Alas.Error.OnePushConfig")
+
+                    if has_restarted < attempts:
+                        ins.start("alas")
+                        set_restart_count(ins.config_name, has_restarted + 1)
+                        
+                        if enable_notify:
+                            handle_notify(
+                                push_config,
+                                title=f"Alas <{ins.config_name}> instance auto restarted",
+                                content=f"Critical error occurred, instance restarted",
+                            )
+                    else:
+                        if ins.config_name not in g_instance_restart_too_many_times:
+                            g_instance_restart_too_many_times.append(ins.config_name)
+                            reset_restart_count(ins.config_name)
+                            handle_notify(
+                                push_config,
+                                title=f"Alas <{ins.config_name}> instance disabled due to too many restarts",
+                                content="The instance exceeded the max restart attempts and is now disabled.",
+                            )
+        except:
+            ...
+
 def app():
     parser = argparse.ArgumentParser(description="Alas web service")
     parser.add_argument(
@@ -1604,6 +1698,14 @@ def app():
     logger.attr("Password", True if key else False)
     logger.attr("CDN", cdn)
     logger.attr("IS_ON_PHONE_CLOUD", IS_ON_PHONE_CLOUD)
+
+    from deploy.atomic import atomic_failure_cleanup
+    atomic_failure_cleanup('./config')
+
+    global g_instance_watcher
+    if g_instance_watcher is None:
+        g_instance_watcher = threading.Thread(target=instance_watcher_thread)
+        g_instance_watcher.start()
 
     def index():
         if key is not None and not login(key):

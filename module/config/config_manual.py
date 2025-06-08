@@ -13,6 +13,7 @@ class ManualConfig:
     > OpsiCrossMonth
     > Commission > Tactical > Research
     > Exercise
+    > SmallGame
     > Dorm > Meowfficer > Guild > Gacha
     > Reward
     > ShopFrequent > ShopOnce > Shipyard > Freebies
@@ -24,7 +25,10 @@ class ManualConfig:
     > Daily > Hard > OpsiAshBeacon > OpsiAshAssist > OpsiMonthBoss
     > Sos > EventSp > EventA > EventB > EventC > EventD
     > RaidDaily > CoalitionSp > WarArchives > MaritimeEscort
-    > Event > Event2 > Event3 > Raid > Hospital > Coalition > Main > Main2 > Main3
+    > Event > Event2 > Event3 > Raid > Hospital > Coalition 
+    > ResearchFarmingSetting > ResearchFarm > ResearchFarm2 
+    > ResearchFarm3 > ResearchFarm4 > ResearchFarm5 > ResearchFarm6
+    > Main > Main2 > Main3
     > OpsiMeowfficerFarming
     > GemsFarming
     > OpsiHazard1Leveling
@@ -115,12 +119,14 @@ class ManualConfig:
     MAP_HAS_MODE_SWITCH = False  # event_20240725_cn has mode switch in map preparation
     # Events from 20240725 to 20241219 introduced new chapter switches
     MAP_CHAPTER_SWITCH_20241219 = False
+    MAP_CHAPTER_SWITCH_20241219_SP = False
     # Since event_20241219_cn chapter B unlocks event startup
     # which means chapter AB are continuous
     STAGE_INCREASE_AB = False
     # Insert anything to STAGE_INCREASE
     STAGE_INCREASE_CUSTOM = ''
     MAP_HAS_CLEAR_PERCENTAGE = True
+    MAP_CLEAR_PERCENTAGE_SHORT = False
     MAP_HAS_WALK_SPEEDUP = False
     MAP_HAS_AMBUSH = True
     MAP_HAS_FLEET_STEP = False
@@ -369,6 +375,11 @@ class ManualConfig:
     """
     # For dev purpose, auto extract new item templates
     SHOP_EXTRACT_TEMPLATE = False
+
+    """
+    module.event_shop
+    """
+    EVENT_SHOP_IGNORE_DEADLINE = False
 
     """
     module.war_archives

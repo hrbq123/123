@@ -1,8 +1,8 @@
 Deploy:
   Git:
     # URL of AzurLaneAutoScript repository
-    # [CN user] Use 'git://git.lyoko.io/AzurLaneAutoScript' for faster and more stable download
-    # [Other] Use 'https://github.com/LmeSzinc/AzurLaneAutoScript'
+    # [CN user] Use 'cn' to get update from git-over-cdn service
+    # [Other] Use 'global' to get update from https://github.com/LmeSzinc/StarRailCopilot
     Repository: {{repository}}
     # Branch of Alas
     # [Developer] Use 'dev', 'app', etc, to try new features
@@ -35,7 +35,7 @@ Deploy:
     # [Other] Use you own python, and its version should be 3.7.6 64bit
     PythonExecutable: {{pythonExecutable}}
     # URL of pypi mirror
-    # [CN user] Use 'https://mirrors.aliyun.com/pypi/simple' for faster and more stable download
+    # [CN user] Use 'https://pypi.tuna.tsinghua.edu.cn/simple' for faster and more stable download
     # [Other] Use null
     PypiMirror: null
     # Install dependencies at startup
@@ -135,6 +135,7 @@ Deploy:
     # 'en-US' for English
     # 'ja-JP' for Japanese
     # 'zh-TW' for Chinese traditional
+    # 'es-ES' for Spanish
     Language: {{language}}
     # Theme of web ui
     # 'default' for light theme

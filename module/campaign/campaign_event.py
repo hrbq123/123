@@ -4,6 +4,7 @@ from datetime import datetime
 from module.campaign.campaign_status import CampaignStatus
 from module.config.config_updater import COALITIONS, EVENTS, GEMS_FARMINGS, HOSPITAL, MARITIME_ESCORTS, RAIDS
 from module.config.utils import DEFAULT_TIME
+from module.exception import RequireRestartGame
 from module.logger import logger
 from module.ui.assets import CAMPAIGN_MENU_NO_EVENT
 from module.ui.page import page_campaign_menu, page_coalition, page_event, page_sp
@@ -41,8 +42,11 @@ class CampaignEvent(CampaignStatus):
                     self.config.cross_set(keys=f'{task}.Campaign.Name', value=campaign_to_go)
                     self.config.cross_set(keys=f'{task}.Campaign.Event', value='campaign_main')
 
+
             logger.info(f'Reset event time limit')
             self.config.cross_set(keys='EventGeneral.EventGeneral.TimeLimit', value=DEFAULT_TIME)
+
+        raise RequireRestartGame()
 
     def event_pt_limit_triggered(self):
         """
@@ -106,7 +110,7 @@ class CampaignEvent(CampaignStatus):
         Pages:
             in: page_event or page_sp
         """
-        from module.config.utils import deep_get
+        from module.config.deep import deep_get
         limit = self.config.TaskBalancer_CoinLimit
         coin = deep_get(self.config.data, 'Dashboard.Coin.Value')
         logger.attr('Coin Count', coin)

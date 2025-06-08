@@ -1,28 +1,27 @@
-import os
-import sys
-import queue
 import argparse
+import os
+import queue
 import threading
 from multiprocessing import Process
 from typing import Dict, List, Union
 
 import inflection
-from filelock import FileLock
 from rich.console import Console, ConsoleRenderable
 
 # Since this file does not run under the same process or subprocess of app.py
 # the following code needs to be repeated
 # Import fake module before import pywebio to avoid importing unnecessary module PIL
 from module.webui.fake_pil_module import *
+
 import_fake_pil_module()
 
-from module.config.utils import filepath_config
 from module.logger import logger, set_file_logger, set_func_logger
 from module.submodule.submodule import load_mod
 from module.submodule.utils import get_available_func, get_available_mod, get_available_mod_func, get_config_mod, \
     get_func_mod, list_mod_instance
 from module.webui.setting import State
 
+g_instance_restart_too_many_times: List[str]
 
 class ProcessManager:
     _processes: Dict[str, "ProcessManager"] = {}
@@ -34,12 +33,22 @@ class ProcessManager:
         self.renderables_max_length = 400
         self.renderables_reduce_length = 80
         self._process: Process = None
+        self._process_locks: Dict[str, threading.Lock] = {}
         self.thd_log_queue_handler: threading.Thread = None
 
     def start(self, func, ev: threading.Event = None) -> None:
         if not self.alive:
             if func is None:
                 func = get_config_mod(self.config_name)
+            global g_instance_restart_too_many_times
+            try:
+                g_instance_restart_too_many_times.remove(self.config_name)
+            except:
+                ...
+
+            from module.webui.restart_tracker import reset_restart_count
+            reset_restart_count(self.config_name)
+        
             self._process = Process(
                 target=ProcessManager.run_process,
                 args=(
@@ -64,7 +73,12 @@ class ProcessManager:
         self.thd_log_queue_handler.start()
 
     def stop(self) -> None:
-        lock = FileLock(f"{filepath_config(self.config_name)}.lock")
+        try:
+            lock = self._process_locks[self.config_name]
+        except KeyError:
+            lock = threading.Lock()
+            self._process_locks[self.config_name] = lock
+
         with lock:
             if self.alive:
                 self._process.kill()

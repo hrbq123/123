@@ -86,7 +86,7 @@ class AutoSearchCombat(MapOperation, Combat, CampaignStatus):
                 if self.__getattribute__("battle_count") != 0:
                     self.lv_get(after_battle=True)
                 else:
-                    logger.warning("Skip getting ship level when BATTLE_0")
+                    logger.info("Skip getting ship level when BATTLE_0")
         else:
             # Fleet changed
             logger.info(f'Fleet: {self.fleet_show_index}, fleet_current_index: {self.fleet_current_index}')
@@ -94,7 +94,7 @@ class AutoSearchCombat(MapOperation, Combat, CampaignStatus):
             if self.__getattribute__("battle_count") != 0:
                 self.lv_get(after_battle=False)
             else:
-                logger.warning("Skip getting ship level when BATTLE_0")
+                logger.info("Skip getting ship level when BATTLE_0")
 
         return checked
 
@@ -274,11 +274,18 @@ class AutoSearchCombat(MapOperation, Combat, CampaignStatus):
             if auto != 'combat_auto' and self.auto_mode_checked and self.is_combat_executing():
                 if self.handle_combat_weapon_release():
                     continue
+            # bunch of popup handlers
             if self.handle_popup_confirm('AUTO_SEARCH_COMBAT_EXECUTE'):
+                continue
+            if self.handle_urgent_commission():
                 continue
             if self.handle_story_skip():
                 continue
+            if self.handle_guild_popup_cancel():
+                continue
             if self.handle_vote_popup():
+                continue
+            if self.handle_mission_popup_ack():
                 continue
 
             # End
@@ -322,10 +329,11 @@ class AutoSearchCombat(MapOperation, Combat, CampaignStatus):
             # Combat status
             if self.handle_get_ship():
                 continue
-            if self.handle_popup_confirm('AUTO_SEARCH_COMBAT_STATUS'):
-                continue
             if self.handle_auto_search_map_option():
                 self._auto_search_status_confirm = False
+                continue
+            # bunch of popup handlers
+            if self.handle_popup_confirm('AUTO_SEARCH_COMBAT_STATUS'):
                 continue
             if self.handle_urgent_commission():
                 continue

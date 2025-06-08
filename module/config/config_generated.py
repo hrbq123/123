@@ -20,7 +20,7 @@ class GeneratedConfig:
     # Group `Emulator`
     Emulator_Serial = 'auto'
     Emulator_PackageName = 'auto'  # auto, com.bilibili.azurlane, com.YoStarEN.AzurLane, com.YoStarJP.AzurLane, com.hkmanjuu.azurlane.gp, com.bilibili.blhx.huawei, com.bilibili.blhx.mi, com.tencent.tmgp.bilibili.blhx, com.bilibili.blhx.baidu, com.bilibili.blhx.qihoo, com.bilibili.blhx.nearme.gamecenter, com.bilibili.blhx.vivo, com.bilibili.blhx.mz, com.bilibili.blhx.dl, com.bilibili.blhx.lenovo, com.bilibili.blhx.uc, com.bilibili.blhx.mzw, com.yiwu.blhx.yx15, com.bilibili.blhx.m4399, com.bilibili.blhx.bilibiliMove, com.hkmanjuu.azurlane.gp.mc
-    Emulator_ServerName = 'disabled'  # disabled, cn_android-0, cn_android-1, cn_android-2, cn_android-3, cn_android-4, cn_android-5, cn_android-6, cn_android-7, cn_android-8, cn_android-9, cn_android-10, cn_android-11, cn_android-12, cn_android-13, cn_android-14, cn_android-15, cn_android-16, cn_android-17, cn_android-18, cn_android-19, cn_android-20, cn_android-21, cn_android-22, cn_android-23, cn_android-24, cn_android-25, cn_ios-0, cn_ios-1, cn_ios-2, cn_ios-3, cn_ios-4, cn_ios-5, cn_ios-6, cn_ios-7, cn_ios-8, cn_ios-9, cn_ios-10, cn_channel-0, cn_channel-1, cn_channel-2, cn_channel-3, cn_channel-4, en-0, en-1, en-2, en-3, en-4, en-5, jp-0, jp-1, jp-2, jp-3, jp-4, jp-5, jp-6, jp-7, jp-8, jp-9, jp-10, jp-11, jp-12, jp-13, jp-14, jp-15, jp-16, jp-17
+    Emulator_ServerName = 'disabled'  # disabled, cn_android-0, cn_android-1, cn_android-2, cn_android-3, cn_android-4, cn_android-5, cn_android-6, cn_android-7, cn_android-8, cn_android-9, cn_android-10, cn_android-11, cn_android-12, cn_android-13, cn_android-14, cn_android-15, cn_android-16, cn_android-17, cn_android-18, cn_android-19, cn_android-20, cn_android-21, cn_android-22, cn_android-23, cn_android-24, cn_android-25, cn_android-26, cn_android-27, cn_ios-0, cn_ios-1, cn_ios-2, cn_ios-3, cn_ios-4, cn_ios-5, cn_ios-6, cn_ios-7, cn_ios-8, cn_ios-9, cn_ios-10, cn_channel-0, cn_channel-1, cn_channel-2, cn_channel-3, cn_channel-4, en-0, en-1, en-2, en-3, en-4, en-5, jp-0, jp-1, jp-2, jp-3, jp-4, jp-5, jp-6, jp-7, jp-8, jp-9, jp-10, jp-11, jp-12, jp-13, jp-14, jp-15, jp-16, jp-17
     Emulator_ScreenshotMethod = 'auto'  # auto, ADB, ADB_nc, uiautomator2, aScreenCap, aScreenCap_nc, DroidCast, DroidCast_raw, nemu_ipc, ldopengl
     Emulator_ControlMethod = 'MaaTouch'  # ADB, uiautomator2, minitouch, Hermit, MaaTouch
     Emulator_ScreenshotDedithering = False
@@ -41,6 +41,10 @@ class GeneratedConfig:
     # Group `Optimization`
     Optimization_ScreenshotInterval = 0.3
     Optimization_CombatScreenshotInterval = 1.0
+    Optimization_ClickMaxRecord = 15
+    Optimization_SingleButtonMaxCount = 12
+    Optimization_MultiButtonMaxCount1 = 6
+    Optimization_MultiButtonMaxCount2 = 6
     Optimization_TaskHoardingDuration = 0
     Optimization_WhenTaskQueueEmpty = 'goto_main'  # stay_there, goto_main, close_game
 
@@ -51,6 +55,7 @@ class GeneratedConfig:
     DropRecord_ResearchRecord = 'do_not'  # do_not, save, upload, save_and_upload
     DropRecord_CommissionRecord = 'do_not'  # do_not, save, upload, save_and_upload
     DropRecord_CombatRecord = 'do_not'  # do_not, save
+    DropRecord_MetaRecord = 'do_not'  # do_not, save
     DropRecord_OpsiRecord = 'do_not'  # do_not, save, upload, save_and_upload
     DropRecord_MeowfficerBuy = 'do_not'  # do_not, save
     DropRecord_MeowfficerTalent = 'do_not'  # do_not, save, upload, save_and_upload
@@ -121,6 +126,78 @@ class GeneratedConfig:
     Emotion_Fleet2Recover = 'not_in_dormitory'  # not_in_dormitory, dormitory_floor_1, dormitory_floor_2
     Emotion_Fleet2Oath = False
 
+    # Group `ResearchFarmingSetting`
+    ResearchFarmingSetting_OilLimit = 3000
+    ResearchFarmingSetting_ResearchSeries = 1  # 1, 2, 3, 4, 5, 6, 7
+    ResearchFarmingSetting_ShipIndex = 1  # 1, 2, 3, 4, 5, 6
+    ResearchFarmingSetting_ExperienceIndex = 1  # 0, 1, 2
+    ResearchFarmingSetting_CheckInterval = 5
+    ResearchFarmingSetting_CurrentCampaignTimes = 0
+    ResearchFarmingSetting_OnepushNotify = True
+
+    # Group `OpsiHazard1ResearchFarming`
+    OpsiHazard1ResearchFarming_Enable = False
+
+    # Group `ResearchFarm1Setting`
+    ResearchFarm1Setting_Enable = False
+    ResearchFarm1Setting_Campaign = '12-4'
+    ResearchFarm1Setting_Fleet1 = 1  # 1, 2, 3, 4, 5, 6
+    ResearchFarm1Setting_EmotionValue = 119
+    ResearchFarm1Setting_EmotionControlMethod = 'calculate'  # calculate, ignore, calculate_ignore
+    ResearchFarm1Setting_Fleet1Control = 'prevent_yellow_face'  # keep_exp_bonus, prevent_green_face, prevent_yellow_face, prevent_red_face
+    ResearchFarm1Setting_Fleet1Recover = 'not_in_dormitory'  # not_in_dormitory, dormitory_floor_1, dormitory_floor_2
+    ResearchFarm1Setting_Fleet2 = 2  # 0, 1, 2, 3, 4, 5, 6
+
+    # Group `ResearchFarm2Setting`
+    ResearchFarm2Setting_Enable = False
+    ResearchFarm2Setting_Campaign = '12-4'
+    ResearchFarm2Setting_Fleet1 = 1  # 1, 2, 3, 4, 5, 6
+    ResearchFarm2Setting_EmotionValue = 119
+    ResearchFarm2Setting_EmotionControlMethod = 'calculate'  # calculate, ignore, calculate_ignore
+    ResearchFarm2Setting_Fleet1Control = 'prevent_yellow_face'  # keep_exp_bonus, prevent_green_face, prevent_yellow_face, prevent_red_face
+    ResearchFarm2Setting_Fleet1Recover = 'not_in_dormitory'  # not_in_dormitory, dormitory_floor_1, dormitory_floor_2
+    ResearchFarm2Setting_Fleet2 = 2  # 0, 1, 2, 3, 4, 5, 6
+
+    # Group `ResearchFarm3Setting`
+    ResearchFarm3Setting_Enable = False
+    ResearchFarm3Setting_Campaign = '12-4'
+    ResearchFarm3Setting_Fleet1 = 1  # 1, 2, 3, 4, 5, 6
+    ResearchFarm3Setting_EmotionValue = 119
+    ResearchFarm3Setting_EmotionControlMethod = 'calculate'  # calculate, ignore, calculate_ignore
+    ResearchFarm3Setting_Fleet1Control = 'prevent_yellow_face'  # keep_exp_bonus, prevent_green_face, prevent_yellow_face, prevent_red_face
+    ResearchFarm3Setting_Fleet1Recover = 'not_in_dormitory'  # not_in_dormitory, dormitory_floor_1, dormitory_floor_2
+    ResearchFarm3Setting_Fleet2 = 2  # 0, 1, 2, 3, 4, 5, 6
+
+    # Group `ResearchFarm4Setting`
+    ResearchFarm4Setting_Enable = False
+    ResearchFarm4Setting_Campaign = '12-4'
+    ResearchFarm4Setting_Fleet1 = 1  # 1, 2, 3, 4, 5, 6
+    ResearchFarm4Setting_EmotionValue = 119
+    ResearchFarm4Setting_EmotionControlMethod = 'calculate'  # calculate, ignore, calculate_ignore
+    ResearchFarm4Setting_Fleet1Control = 'prevent_yellow_face'  # keep_exp_bonus, prevent_green_face, prevent_yellow_face, prevent_red_face
+    ResearchFarm4Setting_Fleet1Recover = 'not_in_dormitory'  # not_in_dormitory, dormitory_floor_1, dormitory_floor_2
+    ResearchFarm4Setting_Fleet2 = 2  # 0, 1, 2, 3, 4, 5, 6
+
+    # Group `ResearchFarm5Setting`
+    ResearchFarm5Setting_Enable = False
+    ResearchFarm5Setting_Campaign = '12-4'
+    ResearchFarm5Setting_Fleet1 = 1  # 1, 2, 3, 4, 5, 6
+    ResearchFarm5Setting_EmotionValue = 119
+    ResearchFarm5Setting_EmotionControlMethod = 'calculate'  # calculate, ignore, calculate_ignore
+    ResearchFarm5Setting_Fleet1Control = 'prevent_yellow_face'  # keep_exp_bonus, prevent_green_face, prevent_yellow_face, prevent_red_face
+    ResearchFarm5Setting_Fleet1Recover = 'not_in_dormitory'  # not_in_dormitory, dormitory_floor_1, dormitory_floor_2
+    ResearchFarm5Setting_Fleet2 = 2  # 0, 1, 2, 3, 4, 5, 6
+
+    # Group `ResearchFarm6Setting`
+    ResearchFarm6Setting_Enable = False
+    ResearchFarm6Setting_Campaign = '12-4'
+    ResearchFarm6Setting_Fleet1 = 1  # 1, 2, 3, 4, 5, 6
+    ResearchFarm6Setting_EmotionValue = 119
+    ResearchFarm6Setting_EmotionControlMethod = 'calculate'  # calculate, ignore, calculate_ignore
+    ResearchFarm6Setting_Fleet1Control = 'prevent_yellow_face'  # keep_exp_bonus, prevent_green_face, prevent_yellow_face, prevent_red_face
+    ResearchFarm6Setting_Fleet1Recover = 'not_in_dormitory'  # not_in_dormitory, dormitory_floor_1, dormitory_floor_2
+    ResearchFarm6Setting_Fleet2 = 2  # 0, 1, 2, 3, 4, 5, 6
+
     # Group `HpControl`
     HpControl_UseHpBalance = False
     HpControl_UseEmergencyRepair = False
@@ -157,7 +234,9 @@ class GeneratedConfig:
     GemsFarming_CommonCV = 'any'  # any, langley, bogue, ranger, hermes
     GemsFarming_ChangeVanguard = 'ship'  # disabled, ship, ship_equip
     GemsFarming_CommonDD = 'any'  # any, favourite, aulick_or_foote, cassin_or_downes, z20_or_z21
+    GemsFarming_StopIFAutoNotEnsured = True
     GemsFarming_CommissionLimit = True
+
 
     # Group `EventGeneral`
     EventGeneral_PtLimit = 0
@@ -181,12 +260,13 @@ class GeneratedConfig:
 
     # Group `Hospital`
     Hospital_UseRecommendFleet = True
+    Hospital_mapName = '0-T1'
 
     # Group `MaritimeEscort`
     MaritimeEscort_Enable = True
 
     # Group `Coalition`
-    Coalition_Mode = 'hard'  # easy, normal, hard, ex
+    Coalition_Mode = 'tc1'  # tc1, tc2, tc3, sp, ex
     Coalition_Fleet = 'single'  # single, multi
 
     # Group `Commission`
@@ -260,13 +340,14 @@ class GeneratedConfig:
     Reward_CollectWeeklyMission = True
 
     # Group `Awaken`
+    Awaken_Favourite = False
     Awaken_LevelCap = 'level120'  # level120, level125
 
     # Group `GeneralShop`
     GeneralShop_UseGems = False
     GeneralShop_Refresh = False
     GeneralShop_BuySkinBox = False
-    GeneralShop_ConsumeCoins = False
+    GeneralShop_ConsumeCoins = 550000
     GeneralShop_Filter = 'BookRedT3 > BookYellowT3 > BookBlueT3 > BookRedT2\n> Cube\n> FoodT6 > FoodT5'
 
     # Group `GuildShop`
@@ -300,6 +381,13 @@ class GeneratedConfig:
 
     # Group `CoreShop`
     CoreShop_Filter = 'Array'
+
+    # Group `EventShop`
+    EventShop_Enable = False
+    EventShop_UnlockShipSSR = False
+    EventShop_BuyShipUR = 0  # 0, 1, 2
+    EventShop_PresetFilter = 'all'  # all, custom
+    EventShop_CustomFilter = 'EquipUR > EquipSSR > GachaTicket\n> DR > PR > Array > Chip > CatT3\n> Meta > SkinBox\n> Oil > Coin > FoodT1\n> AugmentCore > AugmentEnhanceT2 > AugmentChangeT2 > AugmentChangeT1\n> Cube > Medal > ExpBookT1\n> CatT2 > CatT1 > PlateGeneralT3 > PlateT3 > BoxT4\n> ShipSSR'
 
     # Group `ShipyardDr`
     ShipyardDr_ResearchSeries = 2  # 2, 3, 4
@@ -380,6 +468,7 @@ class GeneratedConfig:
     OpsiGeneral_BuyActionPointLimit = 0  # 0, 1, 2, 3, 4, 5
     OpsiGeneral_OilLimit = 1000
     OpsiGeneral_RepairThreshold = 0.4
+    OpsiGeneral_DontRepair = False
     OpsiGeneral_DoRandomMapEvent = True
     OpsiGeneral_AkashiShopFilter = 'ActionPoint > PurpleCoins'
 
@@ -432,6 +521,9 @@ class GeneratedConfig:
     OpsiMeowfficerFarming_ActionPointPreserve = 1000
     OpsiMeowfficerFarming_HazardLevel = 5  # 3, 4, 5, 6, 10
     OpsiMeowfficerFarming_TargetZone = 0
+
+    # Group `HigherPriority`
+    HigherPriority_Enable = False
 
     # Group `OpsiHazard1Leveling`
     OpsiHazard1Leveling_TargetZone = 0  # 0, 44, 22
@@ -545,10 +637,33 @@ class GeneratedConfig:
     GuildCoin_Color = '^000000'
     GuildCoin_Record = datetime.datetime(2020, 1, 1, 0, 0)
 
+    # Group `ResearchPercent`
+    ResearchPercent_Value = 0
+    ResearchPercent_Limit = 100
+    ResearchPercent_Color = '^000000'
+    ResearchPercent_Record = datetime.datetime(2020, 1, 1, 0, 0)
+
+    # Group `PlayerLevel`
+    PlayerLevel_Value = 0
+    PlayerLevel_Color = '^000000'
+    PlayerLevel_Record = datetime.datetime(2020, 1, 1, 0, 0)
+
+    # Group `PlayerExp`
+    PlayerExp_Value = 0
+    PlayerExp_Limit = 0
+    PlayerExp_Color = '^000000'
+    PlayerExp_Record = datetime.datetime(2020, 1, 1, 0, 0)
+
     # Group `AutoRestart`
     AutoRestart_Enabled = False
     AutoRestart_AttemptsToRestart = 114514
     AutoRestart_NotifyWhenAutoRestart = False
+
+    # Group `InstanceRestart`
+    InstanceRestart_Enabled = False
+    InstanceRestart_AttemptsToRestart = 114514
+    InstanceRestart_NotifyWhenAutoRestart = False
+    InstanceRestart_HasRestarted = 0
 
     # Group `Storage`
     Storage_Storage = {}

@@ -9,7 +9,7 @@ from cached_property import cached_property
 
 from module.base.decorator import del_cached_property
 from module.config.config import AzurLaneConfig, TaskEnd
-from module.config.utils import deep_get, deep_set
+from module.config.deep import deep_get, deep_set
 from module.exception import *
 from module.logger import logger
 from module.notify import handle_notify
@@ -31,6 +31,14 @@ class AzurLaneAutoScript:
         # Failure count of tasks
         # Key: str, task name, value: int, failure count
         self.failure_record = {}
+
+        self.class_name = self.__class__.__name__
+        self.is_azur = False
+        self.is_ark = False
+        if self.class_name == "AzurLaneAutoScript":
+            self.is_azur = True
+        elif self.class_name == "ArknightsAutoScript":
+            self.is_ark = True
 
     @cached_property
     def config(self):
@@ -66,6 +74,9 @@ class AzurLaneAutoScript:
         except EmulatorNotRunningError:
             logger.critical('EmulatorNotRunningError')
             exit(1)
+        except EmulatorNotRunningError:
+            logger.critical('EmulatorNotRunningError')
+            exit(1)
         except Exception as e:
             logger.exception(e)
             exit(1)
@@ -90,6 +101,10 @@ class AzurLaneAutoScript:
             self.__getattribute__(command)()
             if command != "restart" and self.GameRestartBecauseErrorTimes != 0:
                 self.GameRestartBecauseErrorTimes = 0
+            return True
+        except RequireRestartGame:
+            self.config.task_call('Restart')
+            self.device.sleep(10)
             return True
         except TaskEnd:
             return True
@@ -206,6 +221,13 @@ class AzurLaneAutoScript:
             logger.critical('Auto search could not be set correctly. Maybe your ships in hard mode are changed.')
             logger.critical('Request human takeover.')
             exit(1)
+        except MapDetectionError as e:
+            logger.error(e)
+            self.save_error_log()
+            logger.warning(f'Game stuck, will be restarted in 10 seconds')
+            self.config.task_call('Restart')
+            self.device.sleep(10)
+            return False
         except Exception as e:
             logger.exception(e)
             self.save_error_log()
@@ -426,6 +448,40 @@ class AzurLaneAutoScript:
         from module.campaign.os_run import OSCampaignRun
         OSCampaignRun(config=self.config, device=self.device).opsi_cross_month()
 
+    def research_farming_setting(self):
+        from module.research_farming.farming import ResearchFarming
+        ResearchFarming(config=self.config, device=self.device).run()
+
+    def research_farm(self):
+        from module.campaign.run import CampaignRun
+        CampaignRun(config=self.config, device=self.device).run(
+            name=self.config.Campaign_Name, folder=self.config.Campaign_Event, mode=self.config.Campaign_Mode)
+
+    def research_farm2(self):
+        from module.campaign.run import CampaignRun
+        CampaignRun(config=self.config, device=self.device).run(
+            name=self.config.Campaign_Name, folder=self.config.Campaign_Event, mode=self.config.Campaign_Mode)
+
+    def research_farm3(self):
+        from module.campaign.run import CampaignRun
+        CampaignRun(config=self.config, device=self.device).run(
+            name=self.config.Campaign_Name, folder=self.config.Campaign_Event, mode=self.config.Campaign_Mode)
+
+    def research_farm4(self):
+        from module.campaign.run import CampaignRun
+        CampaignRun(config=self.config, device=self.device).run(
+            name=self.config.Campaign_Name, folder=self.config.Campaign_Event, mode=self.config.Campaign_Mode)
+
+    def research_farm5(self):
+        from module.campaign.run import CampaignRun
+        CampaignRun(config=self.config, device=self.device).run(
+            name=self.config.Campaign_Name, folder=self.config.Campaign_Event, mode=self.config.Campaign_Mode)
+
+    def research_farm6(self):
+        from module.campaign.run import CampaignRun
+        CampaignRun(config=self.config, device=self.device).run(
+            name=self.config.Campaign_Name, folder=self.config.Campaign_Event, mode=self.config.Campaign_Mode)
+
     def main(self):
         from module.campaign.run import CampaignRun
         CampaignRun(config=self.config, device=self.device).run(
@@ -569,7 +625,9 @@ class AzurLaneAutoScript:
                         del_cached_property(self, 'config')
                         continue
                     if task.command != 'Restart':
-                        self.run('start')
+                        self.config.task_call('Restart')
+                        del_cached_property(self, 'config')
+                        continue
                 elif method == 'goto_main':
                     logger.info('Goto main page during wait')
                     self.run('goto_main')
@@ -662,6 +720,12 @@ class AzurLaneAutoScript:
                 else:
                     logger.critical('Maybe your emulator died, trying to restart it')
                     self.device.emulator_start()
+            if self.is_azur and not self.device.app_is_running():
+                self.config.task_call('Restart')
+                self.is_first_task = False
+                continue
+
+
 
             # Run
             logger.info(f'Scheduler: Start task `{task}`')
