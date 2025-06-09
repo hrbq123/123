@@ -32,7 +32,7 @@ class CampaignEvent(CampaignStatus):
                     continue
                 name = self.config.cross_get(keys=f'{task}.Campaign.Name', default='2-4')
                 if not self.stage_is_main(name):
-                    from module.config.utils import deep_get
+                    from module.config.deep import deep_get
                     _gg_on = deep_get(self.config.data, keys='GameManager.GGHandler.Enabled')
                     if _gg_on:
                         campaign_to_go = '15-1'
