@@ -554,11 +554,11 @@
       "help": ""
     },
     "ScreenshotInterval": {
-      "name": "放慢截图速度至 X 秒一张",
+      "name": "别动，减少卡死（1-3）",
       "help": ""
     },
     "CombatScreenshotInterval": {
-      "name": "战斗中放慢截图速度至 X 秒一张",
+      "name": "同理（3-5）",
       "help": ""
     },
     "ClickMaxRecord": {
