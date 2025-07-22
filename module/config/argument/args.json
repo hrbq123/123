@@ -1671,7 +1671,6 @@
         "type": "select",
         "value": "ship",
         "option": [
-          "disabled",
           "ship",
           "ship_equip"
         ]
