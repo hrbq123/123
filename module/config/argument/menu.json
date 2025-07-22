@@ -106,8 +106,7 @@
       "EventStory",
       "Benchmark",
       "AzurLaneUncensored",
-      "GameManager",
-      "SomethingSpecial"
+      "GameManager"
     ]
   }
 }
