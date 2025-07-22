@@ -1672,7 +1672,8 @@
         "value": "ship",
         "option": [
           "ship",
-          "ship_equip"
+          "ship_equip",
+          "disable"
         ]
       },
       "CommonDD": {
