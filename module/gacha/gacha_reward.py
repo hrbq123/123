@@ -292,7 +292,6 @@ class RewardGacha(GachaUI, Retirement):
         # Go to Gacha
         self.ui_goto_gacha()
 
-
         # Flush queue of any pre-existing
         # builds to ensure starting fresh
         # Upon exit, expected to be in
@@ -329,7 +328,6 @@ class RewardGacha(GachaUI, Retirement):
         else:
             LogRes(self.config).Cube = self.build_cube_count
             self.config.update()
-
 
         # Submit 'buy_count' and execute if capable
         # Cannot use handle_popup_confirm, this window
