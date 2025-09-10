@@ -43,6 +43,7 @@
       "EventD",
       "EventSp",
       "RaidDaily",
+      "EventStory",
       "CoalitionSp"
     ]
   },
@@ -57,6 +58,7 @@
       "Meowfficer",
       "Guild",
       "Reward",
+      "Oilkeep",
       "Awaken"
     ]
   },
@@ -73,6 +75,8 @@
       "Gacha",
       "Freebies",
       "Minigame",
+      "Smallevent",
+      "ShipIr",
       "PrivateQuarters"
     ]
   },
@@ -103,7 +107,6 @@
     "tasks": [
       "Daemon",
       "OpsiDaemon",
-      "EventStory",
       "Benchmark",
       "AzurLaneUncensored",
       "GameManager",

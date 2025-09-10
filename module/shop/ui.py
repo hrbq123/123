@@ -4,7 +4,7 @@ from module.base.timer import Timer
 from module.handler.assets import POPUP_CONFIRM
 from module.logger import logger
 from module.shop.assets import *
-from module.ui.assets import ACADEMY_GOTO_MUNITIONS, SHOP_BACK_ARROW
+from module.ui.assets import ACADEMY_GOTO_MUNITIONS, SHOP_BACK_ARROW, SHOP_GOTO_MUNITIONS
 from module.ui.navbar import Navbar
 from module.ui.page import page_academy, page_main, page_shop, page_munitions
 from module.ui.ui import UI

@@ -10,20 +10,7 @@ class LogRes:
     Logres(AzurLaneConfig).<res_name>=resource_value:int
     OR  ={'Value:int, 'Limit/Total':int}:dict
     """
-    YellowCoin: int
-    Oil: list
-    Coin: list
-    Gem: int
-    Pt: int
-    Cube: int
-    ActionPoint: list
-    PurpleCoin: int
-    Core: int
-    Medal: int
-    Merit: int
-    GuildCoin: int
-    ResearchPercent: int
-    AlasCoin: int
+    YellowCoin: list
 
     def __init__(self, config):
         self.__dict__['config'] = config
@@ -52,7 +39,20 @@ class LogRes:
         else:
             logger.info('No such resource on dashboard')
             super().__setattr__(name=key, value=value)
-
+            
+    def __getattr__(self, key):
+        if key in self.groups:
+            _key_group = f'Dashboard.{key}'
+            _key = _key_group + '.Value'
+            try:
+                modified_value = self.config.modified[_key]
+                return modified_value
+            except:
+                return deep_get(self.config.data, keys=_key_group + '.Value')
+        else:
+            logger.info(f'No such resource {key} on dashboard')
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{key}'")
+        
     @cached_property
     def groups(self) -> dict:
         from module.config.utils import read_file, filepath_argument
@@ -80,11 +80,3 @@ class LogRes:
             logger.warning('No such resource!')
         return True
         """
-
-
-if __name__ == '__main__':
-    from module.config.config import AzurLaneConfig
-    config = AzurLaneConfig('alas2')
-    LogRes(config=config).ActionPoint = {'Total': 99999, 'Value': 99999}
-    config.update()
-    exit(0)

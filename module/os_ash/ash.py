@@ -62,15 +62,9 @@ class AshCombat(Combat):
         return False
 
     def handle_battle_preparation(self):
-
-        if self.appear(BATTLE_PREPARATION, offset=(20, 20)):
-            self.device.sleep(0.5)
-            self.device.screenshot()
-            # Power limit check
-            from module.gg_handler.gg_handler import GGHandler
-            GGHandler(config=self.config, device=self.device).power_limit('Ash')
-            if super().handle_battle_preparation():
-                return True
+        
+        if super().handle_battle_preparation():
+            return True
 
         if self.appear_then_click(ASH_START, offset=(30, 30), interval=2):
             return True
@@ -135,58 +129,14 @@ class AshCombat(Combat):
                     continue
                 if self.appear_then_click(ASH_START, offset=(30, 30), interval=2):
                     continue
+                if super().handle_combat_automation_confirm():
+                    continue
                 if self.appear(META_TEAM_READY):
                     logger.info("Ash beacon ready.")
                     break
         super().combat_preparation(balance_hp=balance_hp, emotion_reduce=emotion_reduce, auto=auto, fleet_index=fleet_index)
             
-    def combat_execute(self, auto='combat_auto', submarine='do_not_use', drop=None):
-        """
-        Args:
-            auto (str): ['combat_auto', 'combat_manual', 'stand_still_in_the_middle', 'hide_in_bottom_left']
-            submarine (str): ['do_not_use', 'hunt_only', 'every_combat']
-            drop (DropImage):
-        """
-        logger.info('Combat execute')
-        auto = 'combat_auto'
-        self.submarine_call_reset()
-        self.combat_auto_reset()
-        self.combat_manual_reset()
-        self.device.stuck_record_clear()
-        self.device.click_record_clear()
-        confirm_timer = Timer(10)
-        confirm_timer.start()
-
-        while 1:
-            self.device.screenshot()
-
-            if not confirm_timer.reached():
-                if self.handle_combat_automation_confirm():
-                    continue
-
-            if self.handle_story_skip():
-                continue
-            if self.handle_combat_auto(auto):
-                continue
-            if self.handle_combat_manual(auto):
-                continue
-            if auto != 'combat_auto' and self.auto_mode_checked and self.is_combat_executing():
-                if self.handle_combat_weapon_release():
-                    continue
-            if self.handle_submarine_call(submarine):
-                continue
-            if self.handle_popup_confirm('COMBAT_EXECUTE'):
-                continue
-
-            # End
-            if self.handle_get_items():
-                self.device.sleep((0.5,0.75))
-                continue
-            if self.handle_battle_status(drop=drop):
-                break
-
-    def combat(self, balance_hp=None, emotion_reduce=None, auto_mode="combat_auto", submarine_mode=None,
-               save_get_items=None, expected_end=None, fleet_index=1):
+    def combat(self, *args, expected_end=None, **kwargs):
         try:
             with self.stat.new(
                     genre="meta", method=self.config.DropRecord_MetaRecord

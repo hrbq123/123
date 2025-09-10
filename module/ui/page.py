@@ -4,11 +4,11 @@ from module.coalition.assets import *
 from module.event_hospital.assets import HOSIPITAL_CHECK
 from module.freebies.assets import MAIL_ENTER
 from module.raid.assets import *
-from module.retire.assets import DOCK_CHECK
+from module.retire.assets import DOCK_CHECK,IN_RETIREMENT_CHECK
 from module.ui.assets import *
 from module.ui_white.assets import *
-
-
+from module.ship_ir.assets import HANDBOOK_CHECK,MAIN_GOTO_COLLECTION,MAIN_GOTO_COLLECTION_WHITE,COLLECTION_CHECK,COLLECTION_GOTO_HANDBOOK
+from module.smallevent.assets import EVENT_PREPARE_PAGE,EVENT_PREPARE_ENTRY
 class Page:
     # Key: str, page name like "page_main"
     # Value: Page, page instance
@@ -216,6 +216,22 @@ page_dock.link(button=GOTO_MAIN, destination=page_main)
 page_main.link(button=MAIN_GOTO_DOCK, destination=page_dock)
 page_main_white.link(button=MAIN_GOTO_DOCK_WHITE, destination=page_dock)
 
+# Main_memory 
+page_main_memory = Page(MAIN_GOTO_MEMORIES_WHITE)
+page_main.link(button=MAIN_TAB_SWITCH_WHITE, destination=page_main_memory)
+page_main_white.link(button=MAIN_TAB_SWITCH_WHITE, destination=page_main_memory)
+
+#Collection
+page_collection = Page(COLLECTION_CHECK)
+page_collection.link(button=GOTO_MAIN, destination=page_main)
+page_main.link(button=MAIN_GOTO_COLLECTION, destination=page_collection)
+page_main_memory.link(button=MAIN_GOTO_COLLECTION_WHITE, destination=page_collection)
+
+#Handbook
+page_handbook = Page(HANDBOOK_CHECK)
+page_handbook.link(button=GOTO_MAIN, destination=page_main)
+page_collection.link(button=COLLECTION_GOTO_HANDBOOK, destination=page_handbook)
+
 # Research
 # Please don't goto page_research from page_reward.
 page_research = Page(RESEARCH_CHECK)
@@ -300,6 +316,11 @@ page_build.link(button=GOTO_MAIN, destination=page_main)
 page_main.link(button=MAIN_GOTO_BUILD, destination=page_build)
 page_main_white.link(button=MAIN_GOTO_BUILD_WHITE, destination=page_build)
 
+#Retire
+page_retire = Page(IN_RETIREMENT_CHECK)
+page_retire.link(button=GOTO_MAIN, destination=page_main)
+page_build.link(button=BUILD_GOTO_RETIRE, destination=page_retire)
+
 # Mail
 page_mail = Page(MAIL_CHECK)
 page_mail.link(button=GOTO_MAIN_WHITE, destination=page_main)
@@ -337,7 +358,6 @@ page_hospital = Page(HOSIPITAL_CHECK)
 page_hospital.link(button=GOTO_MAIN_WHITE, destination=page_main)
 page_campaign_menu.link(button=CAMPAIGN_MENU_GOTO_EVENT, destination=page_hospital)
 
-# Player
-page_player = Page(PLAYER_CHECK)
-page_main.link(button=MAIN_GOTO_PLAYER, destination=page_player)
-page_main_white.link(button=MAIN_GOTO_PLAYER_WHITE, destination=page_player)
+#event prepare page
+page_event_prepare = Page(EVENT_PREPARE_PAGE)
+page_event_prepare.link(button=EVENTPRE_GOTO_MAIN, destination=page_main)

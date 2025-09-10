@@ -110,10 +110,18 @@ class CampaignEvent(CampaignStatus):
         Pages:
             in: page_event or page_sp
         """
-        from module.config.utils import deep_get
+        from module.config.deep import deep_get
         limit = self.config.TaskBalancer_CoinLimit
         coin = deep_get(self.config.data, 'Dashboard.Coin.Value')
         logger.attr('Coin Count', coin)
+        tasks = [
+            'Event',
+            'Event2',
+            'Event3',
+            'Raid',
+            'GemsFarming',
+        ]
+        command = self.config.Scheduler_Command
         # Check Coin
         if coin == 0:
             # Avoid wrong/zero OCR result

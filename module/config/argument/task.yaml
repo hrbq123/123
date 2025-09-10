@@ -22,9 +22,7 @@ Alas:
       - OldRetire
     Restart:
       - Scheduler
-      - RestartEmulator
       - AutoRestart
-      - InstanceRestart
 
 # ==================== Farm ====================
 
@@ -45,6 +43,7 @@ Farm:
       - Scheduler
       - Campaign
       - StopCondition
+      - RegularInspections
       - Fleet
       - Submarine
       - Emotion
@@ -151,6 +150,7 @@ Event:
       - Scheduler
       - Campaign
       - StopCondition
+      - EventPt
       - Fleet
       - Submarine
       - Emotion
@@ -190,6 +190,7 @@ Event:
       - Campaign
       - Coalition
       - StopCondition
+      - EventPt
       - Emotion
     MaritimeEscort:
       - Scheduler
@@ -253,6 +254,7 @@ EventDaily:
       - EnemyPriority
     EventSp:
       - Scheduler
+      - EventDaily
       - Campaign
       - StopCondition
       - Fleet
@@ -266,6 +268,8 @@ EventDaily:
       - Campaign
       - StopCondition
       - Emotion
+    EventStory:
+      - Scheduler
     CoalitionSp:
       - Scheduler
       - Campaign
@@ -305,6 +309,9 @@ Reward:
     Reward:
       - Scheduler
       - Reward
+    Oilkeep:
+      - Scheduler
+      - Oilkeep
     Awaken:
       - Scheduler
       - Awaken
@@ -349,6 +356,12 @@ DailyMission:
       - SupplyPack
     Minigame:
       - Scheduler
+    Smallevent:
+      - Scheduler
+      - Smallevent
+    ShipIr:
+      - Scheduler
+      - ShipIr
     PrivateQuarters:
       - Scheduler
       - PrivateQuarters
@@ -423,8 +436,6 @@ Tool:
       - Daemon
     OpsiDaemon:
       - OpsiDaemon
-    EventStory:
-      - EventStory
     Benchmark:
       - Benchmark
     AzurLaneUncensored:
