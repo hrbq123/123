@@ -1,8 +1,5 @@
 from datetime import datetime, timedelta
 
-import module.config.server as server
-
-from module.base.timer import Timer
 from module.base.utils import image_left_strip
 from module.combat.combat import BATTLE_PREPARATION, Combat
 from module.config.utils import DEFAULT_TIME
@@ -12,7 +9,6 @@ from module.os_ash.assets import *
 from module.os_handler.map_event import MapEventHandler
 from module.ui.assets import BACK_ARROW
 from module.ui.ui import UI
-from module.statistics.azurstats import DropImage
 
 
 class DailyDigitCounter(DigitCounter):
@@ -39,9 +35,7 @@ class AshCombat(Combat):
             return False
         if self.appear(BATTLE_STATUS, offset=(120, 20), interval=self.battle_status_click_interval):
             if drop:
-                self.device.sleep(3)
-                self.device.screenshot()
-                drop.add(self.device.image)
+                drop.handle_add(self)
             else:
                 self.device.sleep((0.25, 0.5))
             self.device.click(BATTLE_STATUS)
@@ -49,7 +43,7 @@ class AshCombat(Combat):
         if self.appear(BATTLE_PREPARATION, offset=(30, 30), interval=2):
             self.device.click(BACK_ARROW)
             return True
-        if super().handle_battle_status():
+        if super().handle_battle_status(drop=drop):
             return True
 
         return False
@@ -138,20 +132,7 @@ class AshCombat(Combat):
             
     def combat(self, *args, expected_end=None, **kwargs):
         try:
-            with self.stat.new(
-                    genre="meta", method=self.config.DropRecord_MetaRecord
-            ) as drop:
-                if save_get_items is False:
-                    drop = None
-                elif isinstance(save_get_items, DropImage):
-                    drop = save_get_items
-                self.combat_preparation(
-                    balance_hp=balance_hp, emotion_reduce=emotion_reduce, auto=auto_mode, fleet_index=fleet_index)
-                self.combat_execute(drop=drop,
-                    auto=auto_mode, submarine=submarine_mode)
-                self.combat_status(expected_end=expected_end)
-
-            logger.info('Combat end.')
+            super().combat(*args, expected_end=expected_end, **kwargs)
         except AshBeaconFinished:
             pass
 
