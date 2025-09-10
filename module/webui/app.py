@@ -1743,10 +1743,6 @@ def app():
     from deploy.atomic import atomic_failure_cleanup
     atomic_failure_cleanup('./config')
 
-    global g_instance_watcher
-    if g_instance_watcher is None:
-        g_instance_watcher = threading.Thread(target=instance_watcher_thread)
-        g_instance_watcher.start()
 
     def index():
         if key is not None and not login(key):
