@@ -637,11 +637,6 @@ class RewardTacticalClass(Dock):
             faction=[v for k, v in self.dock_filter.settings if k == 'faction' and v not in ['all', 'meta']]
         )
 
-        # Set if favorite from config
-        while 1:
-            self.device.screenshot()
-            self.dock_favourite_set(enable=self.config.AddNewStudent_Favorite)
-
         # No ship in dock
         if self.appear(DOCK_EMPTY, offset=(30, 30)) and self.config.AddNewStudent_Favorite == True:
             logger.info('favorite ships is empty')
@@ -659,9 +654,9 @@ class RewardTacticalClass(Dock):
         # [12, 0, 0, 120, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         # Wait until they turn into
         # [120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120]
-            level_ocr = LevelOcr(CARD_LEVEL_GRIDS.buttons, name='DOCK_LEVEL_OCR', threshold=64)
-            timeout = Timer(1, count=1).start()
-
+        level_ocr = LevelOcr(CARD_LEVEL_GRIDS.buttons, name='DOCK_LEVEL_OCR', threshold=64)
+        timeout = Timer(1, count=1).start()
+        while 1:
             list_level = level_ocr.ocr(self.device.image)
             first_ship = next((i for i, x in enumerate(list_level) if x > 0), len(list_level))
             first_empty = next((i for i, x in enumerate(list_level) if x == 0), len(list_level))
@@ -670,6 +665,7 @@ class RewardTacticalClass(Dock):
                 break
             if first_empty >= first_ship:
                 break
+            self.device.screenshot()
 
         should_select_button = None
         for button, level in list(zip(CARD_GRIDS.buttons, list_level))[self.dock_select_index:]:
