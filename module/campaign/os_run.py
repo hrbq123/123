@@ -5,7 +5,6 @@ from module.os.map_operation import OSMapOperation
 from module.os.operation_siren import OperationSiren
 from module.os_handler.action_point import ActionPointLimit
 
-from module.oilkeep.oilkeep import Oilkeep
 
 class OSCampaignRun(OSMapOperation):
     campaign: OperationSiren
@@ -30,12 +29,6 @@ class OSCampaignRun(OSMapOperation):
             self.config.opsi_task_delay(ap_limit=True)
 
     def opsi_shop(self):
-        if self.config.OpsiShop_BuySpecialRadar:
-            if Oilkeep(self.config, self.device).update_oil() > 6000:
-                self.load_campaign()
-                self.campaign.os_voucher_buy_loggerUnlock()
-            else:
-                logger.warning('oil < 6000, skip buying loggerUnlock')
         try:
             self.load_campaign()
             self.campaign.os_shop()
@@ -64,7 +57,8 @@ class OSCampaignRun(OSMapOperation):
             if get_os_reset_remain() > 0:
                 self.config.task_delay(server_update=True)
                 self.config.task_call('Reward')
-                if self.is_cl1_enabled and self.get_yellow_coins() >= self.config.OS_NORMAL_YELLOW_COINS_PRESERVE:
+                if self.config.is_task_enabled('OpsiHazard1Leveling') \
+                        and self.get_yellow_coins() > self.config.OS_CL1_YELLOW_COINS_PRESERVE:
                     self.config.task_call('OpsiHazard1Leveling')
             else:
                 logger.info('Just less than 1 day to OpSi reset, delay 2.5 hours')
