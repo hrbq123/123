@@ -3,14 +3,11 @@ import re
 from module.campaign.campaign_event import CampaignEvent
 from module.coalition.assets import *
 from module.coalition.combat import CoalitionCombat
-from module.exception import ScriptError, ScriptEnd, GameTooManyClickError
+from module.exception import ScriptError, ScriptEnd
 from module.logger import logger
 from module.ocr.ocr import Digit
-from module.log_res.log_res import LogRes
-from module.campaign.assets import OCR_OIL, OCR_OIL_CHECK
-from module.base.utils import  get_color
-import module.config.server as server
-from module.notify import handle_notify
+from module.ui.page import page_campaign_menu
+
 
 class AcademyPtOcr(Digit):
     def __init__(self, *args, **kwargs):
@@ -49,20 +46,8 @@ class Coalition(CoalitionCombat, CampaignEvent):
             raise ScriptError
 
         pt = ocr.ocr(self.device.image)
-        LogRes(self.config).Pt = pt
-        self.config.update()
         return pt
 
-    def _get_oil(self):
-        logger.info("using coalition_get_num")
-        # Update offset
-        _ = self.appear(OCR_OIL_CHECK)
-
-        color = get_color(self.device.image, OCR_OIL_CHECK.button)
-        ocr = Digit(OCR_OIL, name='OCR_OIL', letter=(165, 165, 165), threshold=152)
-
-        return ocr.ocr(self.device.image)
-    
     def triggered_stop_condition(self, oil_check=False, pt_check=False):
         """
         Returns:
@@ -126,7 +111,8 @@ class Coalition(CoalitionCombat, CampaignEvent):
             raise
 
         self.enter_map(event=event, stage=stage, mode=fleet)
-        if self.triggered_stop_condition(oil_check=True):
+        oil_check_boolean=True if self.config.SERVER not in ['tw'] else False
+        if self.triggered_stop_condition(oil_check=oil_check_boolean):
             self.coalition_map_exit(event)
             raise ScriptEnd
         self.coalition_combat()
@@ -138,46 +124,15 @@ class Coalition(CoalitionCombat, CampaignEvent):
             stage = stage.replace('-', '')
 
         return event, stage
-    
-    def get_run_info(self, event, mode, fleet):
+
+    def run(self, event='', mode='', fleet='', total=0):
         event = event if event else self.config.Campaign_Event
         mode = mode if mode else self.config.Coalition_Mode
         fleet = fleet if fleet else self.config.Coalition_Fleet
         if not event or not mode or not fleet:
             raise ScriptError(f'Coalition arguments unfilled. name={event}, mode={mode}, fleet={fleet}')
-        event, mode = self.handle_stage_name(event, mode)
-        return event, mode, fleet
-    
-    def solve_emotion_error(self, event, stage):
-        method = self.config.Fleet_FleetOrder
-        if method == 'fleet1_mob_fleet2_boss':
-            fleet = 'fleet_1'
-        elif method == 'fleet1_boss_fleet2_mob':
-            fleet = 'fleet_2'
-        elif method == 'fleet1_all_fleet2_standby':
-            fleet = 'fleet_1'
-        elif method == 'fleet1_standby_fleet2_all':
-            fleet = 'fleet_2'
-        logger.info(f"now combat is {method}")    
-        logger.warning(f"{event}_{stage} recorded {fleet} is :{getattr(self.emotion, fleet).current}")
-        if getattr(self.emotion, fleet).current > 75:    
-            handle_notify(
-                self.config.Error_OnePushConfig,
-                title=f"Alas <{self.config.config_name}> {event}_{stage} Emotion calculate error ",
-                content=f"<{self.config.config_name}> {fleet} recorded is {getattr(self.emotion, fleet).current},Emotion calculate error"
-            )
-        setattr(getattr(self.emotion, fleet), 'current', 0)
-        self.emotion.record()
-        self.emotion.show()
-        try:
-            self.emotion.check_reduce(battle=self.coalition_get_battles(event, stage))
-        except ScriptEnd as e:
-            logger.hr('Script end')
-            logger.info(str(e))
-            
-    def run(self, event='', mode='', fleet='', total=0):
-        event, mode, fleet = self.get_run_info(event, mode, fleet)
 
+        event, mode = self.handle_stage_name(event, mode)
         self.run_count = 0
         self.run_limit = self.config.StopCondition_RunCount
         while 1:
@@ -195,6 +150,10 @@ class Coalition(CoalitionCombat, CampaignEvent):
                 logger.info(f'Count: {self.run_count}')
 
             # UI switches
+            if self.config.SERVER in ['tw']:
+	            self.ui_goto(page_campaign_menu)
+	            if self.triggered_stop_condition(oil_check=True):
+		            break
             self.device.stuck_record_clear()
             self.device.click_record_clear()
             self.ui_goto_coalition()
@@ -213,30 +172,12 @@ class Coalition(CoalitionCombat, CampaignEvent):
                 logger.hr('Script end')
                 logger.info(str(e))
                 break
-            except GameTooManyClickError as e:
-               if self.appear(COALITION_LOW_EMOTION, offset=(20, 20)):
-                   logger.warning("连战舰队心情低")
-                   self.solve_emotion_error(event=event, stage=mode)
-                   break
+
             # After run
             self.run_count += 1
             if self.config.StopCondition_RunCount:
                 self.config.StopCondition_RunCount -= 1
             # End
-        
-
-            if self.config.StopCondition_StageIncrease:
-                prev_stage = self.config.Coalition_Mode
-                next_stage = self.coalition_name_increase(prev_stage)
-                if next_stage != prev_stage:
-                    logger.info(f'Stage {prev_stage} increases to {next_stage}')
-                    self.config.Coalition_Mode = next_stage
-                    event, mode, fleet = self.get_run_info(event, self.config.Coalition_Mode, fleet)
-                    continue
-                elif self.config.EventPt_EventPtSwitch:
-                    if not self.config.is_task_enabled('CoalitionSp'):
-                        self.config.task_call('CoalitionSp')
-                    continue
             if self.triggered_stop_condition(pt_check=True):
                 break
             # Scheduler
