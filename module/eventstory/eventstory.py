@@ -3,12 +3,10 @@ from module.base.utils import rgb2gray
 from module.campaign.campaign_ui import CampaignUI
 from module.combat.combat import Combat
 from module.eventstory.assets import *
-from module.exception import GameStuckError
 from module.handler.login import LoginHandler
 from module.logger import logger
-from module.ui.page import page_event
-from datetime import datetime
-import random
+from module.ui.page import page_event, page_sp
+
 
 class EventStory(CampaignUI, Combat, LoginHandler):
     def ui_goto_event_story(self):
@@ -16,7 +14,15 @@ class EventStory(CampaignUI, Combat, LoginHandler):
         Returns:
             str: 'finish', 'story', 'unknown'
         """
-        self.ui_ensure(page_event)
+        event = self.config.cross_get('Event.Campaign.Event', '')
+        if event in [
+            'event_20251023_cn',
+        ]:
+            # SP event
+            self.ui_ensure(page_sp)
+        else:
+            # most events show as page_event
+            self.ui_ensure(page_event)
         self.campaign_ensure_mode_20241219('story')
 
         state = 'unknown'
@@ -75,42 +81,6 @@ class EventStory(CampaignUI, Combat, LoginHandler):
         if not interval.reached():
             return False
         button = self.get_event_20250724_button()
-
-        if button:
-            self.device.click(button)
-            interval.reset()
-            return True
-        else:
-            return False
-        
-
-    def get_event_20250814_button(self):
-        """
-        Returns:
-            Button | None:
-        """
-        area = (0, 72, 1280, 560)
-        image = self.image_crop(area, copy=False)
-        image = rgb2gray(image)
-        sim, button = TEMPLATE_BATTLE_STORY.match_result(image)
-        if sim >= 0.85:
-            button = button.move(area[:2])
-            button=button.move((0, random.randint(5, 25)))
-            return button
-        else:
-            return None
-        
-    def handle_event_20250814(self, interval=2):
-        """
-        In Alchemist collab 2, story button just appear everywhere
-
-        Returns:
-            bool: If clicked
-        """
-        interval = self.get_interval_timer(TEMPLATE_BATTLE_STORY, interval=interval)
-        if not interval.reached():
-            return False
-        button = self.get_event_20250814_button()
         if button:
             self.device.click(button)
             interval.reset()
@@ -128,7 +98,6 @@ class EventStory(CampaignUI, Combat, LoginHandler):
         """
         logger.hr('Event story', level=1)
         while 1:
-            logger.info('run_story start')
             if skip_first_screenshot:
                 skip_first_screenshot = False
             else:
@@ -179,11 +148,6 @@ class EventStory(CampaignUI, Combat, LoginHandler):
                 self.popup_interval_clear()
                 self.device.click_record_clear()
                 continue
-            if self.handle_event_20250814():
-                self.story_skip_interval_clear()
-                self.popup_interval_clear()
-                self.device.click_record_clear()
-                continue
             # Secrets of the Abyss (event_20250814_cn)
             # popup after all story finished
             if self.appear_then_click(POPUP_RPG_STATUS, offset=(20, 20), interval=3):
@@ -198,11 +162,7 @@ class EventStory(CampaignUI, Combat, LoginHandler):
             state = self.ui_goto_event_story()
             if state == 'finish':
                 break
-            try:
-                result = self.event_story()
-            except GameStuckError as e:
-                logger.error(f'Event story error: {e}')
-                break
+            result = self.event_story()
             if result == 'battle':
                 # Kill game is considered cleared battles
                 # It's much faster than waiting event battles
@@ -237,19 +197,18 @@ class EventStory(CampaignUI, Combat, LoginHandler):
             return 'story'
         if self.get_event_20250724_button():
             return 'story_alchemist'
-        if self.get_event_20250814_button():
-            return 'story_battle'
+
         return 'unknown'
 
     def run(self):
-        if datetime.now() < datetime(2025, 8, 28, 12, 0, 0):#eventSet
-            self.run_event_story()
-        else:
-            logger.info('Event story expired')
-        # Scheduler
-        self.config.task_delay(server_update=True)
-        pass
+        if not self.device.app_is_running():
+            logger.warning('Game is not running, start it')
+            self.app_start()
 
+        self.run_event_story()
+
+        # Scheduler
+        pass
 
 
 if __name__ == '__main__':
