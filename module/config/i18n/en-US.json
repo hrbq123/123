@@ -740,7 +740,7 @@
       "event_20230223_cn": "Revelations of Dust Rerun",
       "event_20230525_cn": "Confluence of Nothingness Rerun",
       "event_20230803_cn": "Anthem of Remembrance",
-      "event_20230817_cn": "The Fools Scales",
+      "event_20230817_cn": "The Fools Scales Rerun",
       "event_20230914_cn": "Effulgence Before Eclipse",
       "event_20231026_cn": "Tempesta and the Fountain of Youth",
       "event_20231123_cn": "The Ninja Scrolls: Azur Flash",
@@ -761,6 +761,7 @@
       "event_20250724_cn": "The Alchemist and the Tower of Horizons",
       "event_20250814_cn": "Secrets of the Abyss",
       "event_20250912_cn": "A Dance for Amahara Above",
+      "event_20251023_cn": "Tempesta and Islas de Libertád",
       "raid_20200624": "Air Raid Drills with Essex Rerun",
       "raid_20210708": "Cross Wave rerun",
       "raid_20220127": "Mystery Investigation",
@@ -810,7 +811,8 @@
       "war_archives_20220414_cn": "archives Aurora Noctis",
       "war_archives_20220428_cn": "archives Rondo at Rainbows End",
       "war_archives_20220526_cn": "archives Pledge of the Radiant Court",
-      "war_archives_20220728_cn": "archives Aquilifers Ballade"
+      "war_archives_20220728_cn": "archives Aquilifers Ballade",
+      "war_archives_20231026_cn": "archives Tempesta and the Fountain of Youth"
     },
     "Mode": {
       "name": "Level Mode",
