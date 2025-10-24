@@ -1,6 +1,30 @@
-from time import time, sleep
+import time  # 修正导入方式：导入整个time模块
 from datetime import datetime, timedelta
 from functools import wraps
+
+
+def timeout(_function, timeout_sec=30.0, *args, **kwargs):
+    """Won't kill that task until it finishes"""
+    from threading import Thread
+    from module.logger import logger
+
+    def function_timeout(_func):
+        t0 = time.time()  # 修正：使用time模块的time()函数
+        success = True
+        p = Thread(target=_func, args=args, kwargs=kwargs)
+        p.start()
+        p.join(timeout_sec)
+        if p.is_alive():
+            success = False
+        t1 = time.time()  # 修正：使用time模块的time()函数
+        if t1 - t0 < 10:
+            success = False
+        _success = 'Done' if success else 'Failed'
+        logger.hr(f'{_func.__name__}: {_success} in {str(round(t1 - t0, 1))}s', 1)
+        if not success:
+            return True
+        return False
+    return function_timeout(_function)
 
 
 def timer(function):
@@ -10,9 +34,9 @@ def timer(function):
 
     @wraps(function)
     def function_timer(*args, **kwargs):
-        start = time()
+        start = time.time()  # 修正：使用time模块的time()函数
         result = function(*args, **kwargs)
-        cost = time() - start
+        cost = time.time() - start  # 修正：使用time模块的time()函数
         print(f'{function.__name__}: {cost:.10f} s')
         return result
 
@@ -111,7 +135,7 @@ class Timer:
                 pass
         """
         if self._start <= 0:
-            self._start = time()
+            self._start = time.time()  # 修正：使用time模块的time()函数
             self._access = 0
 
         return self
@@ -129,7 +153,7 @@ class Timer:
             float:
         """
         if self._start > 0:
-            diff = time() - self._start
+            diff = time.time() - self._start  # 修正：使用time模块的time()函数
             if diff < 0:
                 diff = 0.
             return diff
@@ -155,7 +179,8 @@ class Timer:
         # each reached() call is consider as an access
         self._access += 1
         if self._start > 0:
-            return self._access > self.count and time() - self._start > self.limit
+            # 修正：使用time模块的time()函数
+            return self._access > self.count and time.time() - self._start > self.limit
         else:
             # not started, return True for fast first try
             return True
@@ -164,7 +189,7 @@ class Timer:
         """
         Reset the timer as if it just started
         """
-        self._start = time()
+        self._start = time.time()  # 修正：使用time模块的time()函数
         self._access = 0
         return self
 
@@ -191,9 +216,10 @@ class Timer:
         """
         Wait until timer reached.
         """
-        diff = self._start + self.limit - time()
+        # 修正：使用time模块的time()函数和sleep()函数
+        diff = self._start + self.limit - time.time()
         if diff > 0:
-            sleep(diff)
+            time.sleep(diff)
 
     def show(self):
         from module.logger import logger
