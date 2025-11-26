@@ -126,6 +126,10 @@
       "name": "Maritime Escort",
       "help": ""
     },
+    "EventShop": {
+      "name": "イベント商店",
+      "help": ""
+    },
     "WarArchives": {
       "name": "作戦履歴",
       "help": ""
@@ -749,6 +753,7 @@
       "coalition_20230323": "星霜海嵐",
       "coalition_20240627": "リトル学園へようこそ",
       "coalition_20250626": "ネオンシティの探索者",
+      "coalition_20251120": "DATE A LANE",
       "event_20200227_cn": "凍絶の北海",
       "event_20200312_cn": "南洋に靡く硝煙（復刻）",
       "event_20200326_cn": "闇靄払う銀翼",
@@ -1831,17 +1836,51 @@
     "Mode": {
       "name": "Coalition.Mode.name",
       "help": "Coalition.Mode.help",
-      "easy": "easy",
-      "normal": "normal",
-      "hard": "hard",
-      "sp": "sp",
-      "ex": "ex"
+      "area1-normal": "area1-normal",
+      "area1-hard": "area1-hard",
+      "area2-normal": "area2-normal",
+      "area2-hard": "area2-hard",
+      "area3-normal": "area3-normal",
+      "area3-hard": "area3-hard",
+      "area4-normal": "area4-normal",
+      "area4-hard": "area4-hard",
+      "area5-normal": "area5-normal",
+      "area5-hard": "area5-hard",
+      "area6-normal": "area6-normal",
+      "area6-hard": "area6-hard"
     },
     "Fleet": {
       "name": "Coalition.Fleet.name",
       "help": "Coalition.Fleet.help",
       "single": "single",
       "multi": "multi"
+    }
+  },
+  "EventShop": {
+    "_info": {
+      "name": "EventShop._info.name",
+      "help": "EventShop._info.help"
+    },
+    "UnlockSSRShip": {
+      "name": "EventShop.UnlockSSRShip.name",
+      "help": "EventShop.UnlockSSRShip.help"
+    },
+    "BuyURShip": {
+      "name": "EventShop.BuyURShip.name",
+      "help": "EventShop.BuyURShip.help",
+      "0": "0",
+      "1": "1",
+      "2": "2"
+    },
+    "PresetFilter": {
+      "name": "EventShop.PresetFilter.name",
+      "help": "EventShop.PresetFilter.help",
+      "all": "all",
+      "custom": "custom"
+    },
+    "CustomFilter": {
+      "name": "EventShop.CustomFilter.name",
+      "help": "EventShop.CustomFilter.help"
     }
   },
   "Commission": {
@@ -2922,6 +2961,10 @@
     "EnsureFullyCollected": {
       "name": "OpsiAshBeacon.EnsureFullyCollected.name",
       "help": "OpsiAshBeacon.EnsureFullyCollected.help"
+    },
+    "AutoCollectShip": {
+      "name": "OpsiAshBeacon.AutoCollectShip.name",
+      "help": "OpsiAshBeacon.AutoCollectShip.help"
     }
   },
   "OpsiFleetFilter": {
@@ -3115,6 +3158,24 @@
       "0": "0",
       "44": "44",
       "22": "22"
+    }
+  },
+  "OpsiCheckLeveling": {
+    "_info": {
+      "name": "OpsiCheckLeveling._info.name",
+      "help": "OpsiCheckLeveling._info.help"
+    },
+    "TargetLevel": {
+      "name": "OpsiCheckLeveling.TargetLevel.name",
+      "help": "OpsiCheckLeveling.TargetLevel.help"
+    },
+    "LastRun": {
+      "name": "OpsiCheckLeveling.LastRun.name",
+      "help": "OpsiCheckLeveling.LastRun.help"
+    },
+    "DelayAfterFull": {
+      "name": "OpsiCheckLeveling.DelayAfterFull.name",
+      "help": "OpsiCheckLeveling.DelayAfterFull.help"
     }
   },
   "Daemon": {
@@ -3712,6 +3773,28 @@
       "Pending": "隊列中",
       "Waiting": "Waiting",
       "NoTask": "No Task"
+    },
+    "Dashboard": {
+      "TimeError": "Time error",
+      "JustNow": "Just now",
+      "MinutesAgo": "Minutes ago",
+      "HoursAgo": "Hours ago",
+      "DaysAgo": "Days ago",
+      "MonthsAgo": "Months ago",
+      "LongTimeAgo": "Long time ago",
+      "NoData": "No data",
+      "Oil": "Oil",
+      "Coin": "Coin",
+      "Gem": "Gem",
+      "Cube": "Cube",
+      "Pt": "Event Pt",
+      "YellowCoin": "Operation Supply Coin",
+      "PurpleCoin": "Special Item Token",
+      "ActionPoint": "Action Point",
+      "Merit": "Merit",
+      "Medal": "Medal",
+      "Core": "Core Data",
+      "GuildCoin": "Guild Coin"
     },
     "AddAlas": {
       "PopupTitle": "新しいコンフィグを追加",

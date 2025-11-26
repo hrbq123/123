@@ -264,8 +264,14 @@ class GeneratedConfig:
     MaritimeEscort_Enable = True
 
     # Group `Coalition`
-    Coalition_Mode = 'hard'  # easy, normal, hard, sp, ex
+    Coalition_Mode = 'area1-normal'  # area1-normal, area1-hard, area2-normal, area2-hard, area3-normal, area3-hard, area4-normal, area4-hard, area5-normal, area5-hard, area6-normal, area6-hard
     Coalition_Fleet = 'single'  # single, multi
+
+    # Group `EventShop`
+    EventShop_UnlockSSRShip = True
+    EventShop_BuyURShip = 2  # 0, 1, 2
+    EventShop_PresetFilter = 'all'  # all, custom
+    EventShop_CustomFilter = 'EquipUR > EquipSSR > Cube > GachaTicket\n> Array > Chip > CatT3 \n> Meta > SkinBox\n> Oil > Coin > Medal > ExpBookT1 > FoodT1\n> DR > PR\n> AugmentCore > AugmentEnhanceT2 > AugmentChangeT2 > AugmentChangeT1\n> CatT2 > CatT1 > PlateGeneralT3 > PlateT3 > BoxT4\n> ShipSSR'
 
     # Group `Commission`
     Commission_PresetFilter = 'cube'  # cube, cube_24h, chip, chip_24h, oil, custom
@@ -483,6 +489,7 @@ class GeneratedConfig:
     OpsiAshBeacon_DossierAutoAttackMode = False
     OpsiAshBeacon_RequestAssist = True
     OpsiAshBeacon_EnsureFullyCollected = True
+    OpsiAshBeacon_AutoCollectShip = True
 
     # Group `OpsiFleetFilter`
     OpsiFleetFilter_Filter = 'Fleet-4 > CallSubmarine > Fleet-2 > Fleet-3 > Fleet-1'
@@ -532,6 +539,11 @@ class GeneratedConfig:
 
     # Group `OpsiHazard1Leveling`
     OpsiHazard1Leveling_TargetZone = 0  # 0, 44, 22
+
+    # Group `OpsiCheckLeveling`
+    OpsiCheckLeveling_TargetLevel = 0
+    OpsiCheckLeveling_LastRun = datetime.datetime(2020, 1, 1, 0, 0)
+    OpsiCheckLeveling_DelayAfterFull = False
 
     # Group `Daemon`
     Daemon_EnterMap = True

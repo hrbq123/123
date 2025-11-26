@@ -467,11 +467,28 @@ MaritimeEscort:
   Enable: true
 Coalition:
   Mode:
-    value: hard
-    option: [ easy, normal, hard, sp, ex ]
+    value: area1-normal
+    option: [ area1-normal, area1-hard, area2-normal, area2-hard, area3-normal, area3-hard, area4-normal, area4-hard, area5-normal, area5-hard, area6-normal, area6-hard ]
   Fleet:
     value: single
     option: [ single, multi ]
+EventShop:
+  UnlockSSRShip: true
+  BuyURShip:
+    value: 2
+    option: [ 0, 1, 2 ]
+  PresetFilter:
+    value: all
+    option: [ all, custom ]
+  CustomFilter: |-
+    EquipUR > EquipSSR > Cube > GachaTicket
+    > Array > Chip > CatT3 
+    > Meta > SkinBox
+    > Oil > Coin > Medal > ExpBookT1 > FoodT1
+    > DR > PR
+    > AugmentCore > AugmentEnhanceT2 > AugmentChangeT2 > AugmentChangeT1
+    > CatT2 > CatT1 > PlateGeneralT3 > PlateT3 > BoxT4
+    > ShipSSR
 
 
 # ==================== Reward ====================
@@ -863,6 +880,7 @@ OpsiAshBeacon:
   DossierAutoAttackMode: false
   RequestAssist: true
   EnsureFullyCollected: true
+  AutoCollectShip: true
 OpsiFleetFilter:
   Filter: |-
     Fleet-4 > CallSubmarine > Fleet-2 > Fleet-3 > Fleet-1
@@ -923,6 +941,10 @@ OpsiHazard1Leveling:
   TargetZone:
     value: 0
     option: [ 0, 44, 22 ]
+OpsiCheckLeveling:
+  TargetLevel: 0
+  LastRun: 2020-01-01 00:00:00
+  DelayAfterFull: false
 
 # ==================== Tools ====================
 

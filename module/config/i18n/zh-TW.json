@@ -126,6 +126,10 @@
       "name": "商船護航",
       "help": ""
     },
+    "EventShop": {
+      "name": "活動商店",
+      "help": ""
+    },
     "WarArchives": {
       "name": "作戰檔案",
       "help": "由於作戰檔案缺少維護，開荒功能不一定能正常使用，如果發現Alas運行異常，請手動完成開荒後使用自律尋敵功能"
@@ -749,6 +753,7 @@
       "coalition_20230323": "極地風暴",
       "coalition_20240627": "歡迎來到童心學院",
       "coalition_20250626": "迷彩都市的尋蹤者",
+      "coalition_20251120": "DATE A LANE",
       "event_20200227_cn": "Northern Overture",
       "event_20200312_cn": "斯圖爾特的硝煙",
       "event_20200326_cn": "Microlayer Medley",
@@ -1831,17 +1836,51 @@
     "Mode": {
       "name": "難度",
       "help": "SP圖需要使用活動每日SP運行",
-      "easy": "簡單",
-      "normal": "普通",
-      "hard": "困難",
-      "sp": "sp",
-      "ex": "EX"
+      "area1-normal": "area1-normal",
+      "area1-hard": "area1-hard",
+      "area2-normal": "area2-normal",
+      "area2-hard": "area2-hard",
+      "area3-normal": "area3-normal",
+      "area3-hard": "area3-hard",
+      "area4-normal": "area4-normal",
+      "area4-hard": "area4-hard",
+      "area5-normal": "area5-normal",
+      "area5-hard": "area5-hard",
+      "area6-normal": "area6-normal",
+      "area6-hard": "area6-hard"
     },
     "Fleet": {
       "name": "出擊隊伍",
       "help": "",
       "single": "單隊連戰",
       "multi": "多隊出擊"
+    }
+  },
+  "EventShop": {
+    "_info": {
+      "name": "活動商店",
+      "help": ""
+    },
+    "UnlockSSRShip": {
+      "name": "解鎖SSR艦船",
+      "help": ""
+    },
+    "BuyURShip": {
+      "name": "購買X艘UR艦船",
+      "help": "",
+      "0": "0",
+      "1": "1",
+      "2": "2"
+    },
+    "PresetFilter": {
+      "name": "活動商店過濾器",
+      "help": "一般不需要修改",
+      "all": "全部",
+      "custom": "自定義"
+    },
+    "CustomFilter": {
+      "name": "自定義活動商店過濾器",
+      "help": "使用自定義過濾器需將 \"活動商店過濾器\" 設定為 \"自定義過濾器\"，並閱讀 https://github.com/LmeSzinc/AzurLaneAutoScript/wiki/filter_string_cn"
     }
   },
   "Commission": {
@@ -3117,6 +3156,24 @@
       "22": "22 | NA海域西南B"
     }
   },
+  "OpsiCheckLeveling": {
+    "_info": {
+      "name": "每日經驗檢測",
+      "help": "檢測出擊艦隊所有艦是否已經獲得滿經驗，若是則發送一條推送消息\n需要先設定「錯誤推送設定」"
+    },
+    "TargetLevel": {
+      "name": "所有艦船獲得到可升級至 X 級的經驗後推送",
+      "help": "0 表示不限制等級"
+    },
+    "LastRun": {
+      "name": "上次檢查時間",
+      "help": "記錄上一次檢查的時間以防止任務重複運行，檢查間隔為1天，該數值是自動記錄的，一般不需要修改"
+    },
+    "DelayAfterFull": {
+      "name": "達到目標等級後延遲任務",
+      "help": ""
+    }
+  },
   "Daemon": {
     "_info": {
       "name": "半自動點擊",
@@ -3712,6 +3769,28 @@
       "Pending": "佇列中",
       "Waiting": "等待中",
       "NoTask": "無任務"
+    },
+    "Dashboard": {
+      "TimeError": "時間錯誤",
+      "JustNow": "剛剛",
+      "MinutesAgo": "分鐘前",
+      "HoursAgo": "小時前",
+      "DaysAgo": "天前",
+      "MonthsAgo": "月前",
+      "LongTimeAgo": "很久之前",
+      "NoData": "無數據",
+      "Oil": "石油",
+      "Coin": "物資",
+      "Gem": "鑽石",
+      "Cube": "魔方",
+      "Pt": "活動PT",
+      "YellowCoin": "大世界黃幣",
+      "PurpleCoin": "大世界紫幣",
+      "ActionPoint": "行動力",
+      "Merit": "功勳",
+      "Medal": "勳章",
+      "Core": "覈心數據",
+      "GuildCoin": "艦隊幣"
     },
     "AddAlas": {
       "PopupTitle": "添加新的設定",

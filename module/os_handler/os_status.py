@@ -94,7 +94,6 @@ class OSStatus(UI):
         LogRes(self.config).PurpleCoin = amount
         return amount
 
-
     def os_shop_get_coins(self):
         self._shop_yellow_coins = self.get_yellow_coins()
         self._shop_purple_coins = self.get_purple_coins()

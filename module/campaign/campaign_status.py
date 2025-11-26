@@ -15,8 +15,10 @@ from module.log_res.log_res import LogRes
 
 if server.server != 'jp':
     OCR_COIN = Digit(OCR_COIN, name='OCR_COIN', letter=(239, 239, 239), threshold=128)
+    OCR_COIN_LIMIT = Digit(OCR_COIN_LIMIT, name='OCR_COIN_LIMIT', letter=(239, 239, 239), threshold=128)
 else:
     OCR_COIN = Digit(OCR_COIN, name='OCR_COIN', letter=(201, 201, 201), threshold=128)
+    OCR_COIN_LIMIT = Digit(OCR_COIN_LIMIT, name='OCR_COIN_LIMIT', letter=(180, 188, 193), threshold=128)
 
 class PtOcr(Ocr):
     def __init__(self, *args, **kwargs):
@@ -112,7 +114,7 @@ class CampaignStatus(UI):
             logger.warning(f'Unexpected OCR_OIL_CHECK color')
             ocr = Digit(_button, name=name, letter=(247, 247, 247), threshold=128)
 
-        return ocr.ocr(self.device.image)
+        return ocr, ocr_limit
 
     def get_oil(self, skip_first_screenshot=True, update=False):
         """

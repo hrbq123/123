@@ -56,6 +56,7 @@ from module.config.utils import (
     filepath_args,
     filepath_config,
     read_file,
+    readable_time,
 )
 from module.config.utils import time_delta
 from module.log_res.log_res import LogRes
