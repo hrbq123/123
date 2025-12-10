@@ -1651,14 +1651,6 @@
       }
     },
     "GemsFarming": {
-      "ChangeFlagship": {
-        "type": "select",
-        "value": "ship",
-        "option": [
-          "ship",
-          "ship_equip"
-        ]
-      },
       "CommonCV": {
         "type": "select",
         "value": "any",
@@ -1675,8 +1667,7 @@
         "value": "ship",
         "option": [
           "disabled",
-          "ship",
-          "ship_equip"
+          "ship"
         ]
       },
       "CommonDD": {
