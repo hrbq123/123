@@ -39,32 +39,18 @@ jobs:
             echo "合并成功，无冲突"
             echo "conflict=false" >> $GITHUB_OUTPUT
           else
-            echo "检测到冲突，尝试自动解决..."
+            echo "❌ 检测到合并冲突，终止同步流程"
             echo "conflict=true" >> $GITHUB_OUTPUT
             
-            # 获取冲突文件列表
+            # 输出冲突文件列表
             conflict_files=$(git diff --name-only --diff-filter=U)
+            echo "冲突文件列表："
+            echo "$conflict_files"
+            echo "conflict_files=$conflict_files" >> $GITHUB_OUTPUT
             
-            # 分类处理冲突
-            for file in $conflict_files; do
-              if file --mime-type -b "$file" | grep -q '^image/\|^application/'; then
-                echo "二进制文件冲突: $file，选择上游版本"
-                git checkout --theirs "$file"
-                git add "$file"
-              else
-                echo "文本文件冲突: $file，使用上游版本"
-                git checkout --theirs "$file"
-                git add "$file"
-              fi
-            done
-            
-            # 完成合并提交
-            if ! git commit -m "自动解决冲突：合并 upstream/master 到 jp 分支"; then
-              echo "自动解决失败，仍有未处理冲突"
-              echo "conflict_files=$conflict_files" >> $GITHUB_OUTPUT
-              exit 1
-            fi
+            # 终止流程并返回错误码
+            exit 1
           fi
           
-          # 推送更改
+          # 推送更改（仅当合并成功时执行）
           git push origin jp
