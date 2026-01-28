@@ -1,65 +1,94 @@
-name: 同步上游仓库代码  # 你的 Workflow 名称，可自定义
+name: mjp
 
 on:
-  workflow_dispatch:  # 手动触发，也可以添加 schedule 定时触发
-  # schedule:
-  #   - cron: '0 0 * * *'  # 每天 UTC 0 点触发（对应北京时间 8 点）
+  schedule:
+    - cron: '30 19 * * *'  # 每天北京时间 3:30 执行（UTC 19:30 = 北京时间 次日 3:30）
+    - cron: '30 23 * * *'  # 每天北京时间 7:30 执行
+  workflow_dispatch:      # 允许手动触发
 
 jobs:
-  sync-upstream:
-    runs-on: ubuntu-latest  # 运行环境，保持 ubuntu 即可
+  sync:
+    runs-on: ubuntu-latest
     steps:
-      - name: 检出当前仓库代码
-        uses: actions/checkout@v4
+      - name: Checkout your repo
+        uses: actions/checkout@v3
         with:
-          ref: jp1  # 直接检出 jp1 分支
-          fetch-depth: 100  # 浅克隆，对应脚本中的 depth=100
+          fetch-depth: 100  # 只拉取最近100个提交（平衡速度和历史完整性）
+          ref: mjp  # 直接检出 mjp 分支，减少后续切换分支操作
 
-      - name: 配置 upstream 并同步代码
-        id: sync_code  # 步骤 ID，用于后续获取 output
+      - name: Set up Git
+        run: |
+          # 配置 Git 提交者身份（使用 GitHub 官方机器人身份，规范且无需自定义）
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          echo "✅ 已完成 Git 身份配置"
+
+      - name: Sync from upstream
+        id: sync
         shell: /usr/bin/bash -e {0}
         run: |
-          # ========== 优化点：先判断 upstream 是否存在，再删除，屏蔽无关错误 ==========
+          # ========== 优化：先判断 upstream 是否存在，再删除，屏蔽无关错误提示 ==========
           if git remote | grep -q "^upstream$"; then
             git remote remove upstream
             echo "ℹ️  已移除已存在的 upstream 远程仓库"
           fi
-
-          # 添加 upstream 远程仓库
+          
+          # 添加 upstream 远程仓库（目标上游项目）
           git remote add upstream https://github.com/LmeSzinc/AzurLaneAutoScript.git
-          echo "✅ 已成功配置 upstream 远程仓库：https://github.com/LmeSzinc/AzurLaneAutoScript.git"
-
-          # 拉取上游最新代码（限制深度，只取最近100个提交）
+          echo "✅ 已成功配置 upstream 远程仓库"
+          
+          # 拉取上游最新代码（限制深度，只取最近100个提交，提升速度）
           git fetch --depth=100 upstream master
-          echo "✅ 已成功拉取上游 master 分支最新 100 个提交"
-
-          # 确保本地 jp1 分支与远程 origin/jp1 同步（--rebase 避免无意义的合并提交）
-          git pull --rebase origin jp1 --depth=100
-          echo "✅ 已成功同步本地 jp1 分支与远程 origin/jp1"
-
+          echo "✅ 已成功拉取上游 master 分支最新代码"
+          
+          # 确保本地 mjp 分支与远程 origin/mjp 同步（--rebase 避免无意义的合并提交）
+          git pull --rebase origin mjp --depth=100
+          echo "✅ 已成功同步本地 mjp 分支与远程 origin/mjp"
+          
           # 尝试合并上游 master 分支（--no-edit 自动使用默认提交信息，无需交互）
           if git merge --no-edit upstream/master; then
             echo "🎉 合并成功，无冲突"
             echo "conflict=false" >> $GITHUB_OUTPUT
+            echo "conflict_files=无" >> $GITHUB_OUTPUT
           else
-            echo "❌ 检测到合并冲突，终止同步流程"
+            echo "⚠️  检测到冲突，尝试自动解决（优先选用上游版本）..."
             echo "conflict=true" >> $GITHUB_OUTPUT
             
-            # 输出冲突文件列表并写入 output
+            # 获取冲突文件列表（U 表示 Unmerged，未合并的冲突文件）
             conflict_files=$(git diff --name-only --diff-filter=U)
-            echo "📋 冲突文件列表："
+            echo "📋 检测到冲突文件列表："
             echo "$conflict_files"
-            # 处理 GH Action 中 output 换行问题（用 %0A 替换换行符）
+            
+            # 分类处理冲突（二进制文件/文本文件均优先选用上游版本 --theirs）
+            for file in $conflict_files; do
+              if file --mime-type -b "$file" | grep -q '^image/\|^application/'; then
+                echo "🔧 二进制文件冲突: $file，选择上游版本"
+                git checkout --theirs "$file"
+                git add "$file"
+              else
+                echo "🔧 文本文件冲突: $file，使用上游版本"
+                git checkout --theirs "$file"
+                git add "$file"
+              fi
+            done
+            
+            # 完成合并提交（手动指定提交信息，方便后续追溯冲突解决记录）
+            if ! git commit -m "自动解决冲突：合并 upstream/master 到 mjp 分支"; then
+              echo "❌ 自动解决失败，仍有未处理的残留冲突"
+              # 处理换行符，确保 GH Action Output 中多行文件列表正常显示
+              conflict_files_formatted=$(echo "$conflict_files" | sed -z 's/\n/%0A/g')
+              echo "conflict_files=$conflict_files_formatted" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+            
+            echo "✅ 自动解决冲突完成，已提交合并结果"
+            # 即使解决成功，也写入冲突文件列表，方便后续追溯
             conflict_files_formatted=$(echo "$conflict_files" | sed -z 's/\n/%0A/g')
             echo "conflict_files=$conflict_files_formatted" >> $GITHUB_OUTPUT
-            
-            # 终止流程并返回错误码
-            exit 1
           fi
-
-          # 推送更改到远程 jp1 分支（GH Action 中需要配置正确的推送权限）
-          git push origin jp1
-          echo "✅ 已成功将合并结果推送到远程 origin/jp1 分支"
+          
+          # 推送更改到远程 mjp 分支（依赖 GH Action 配置的读写权限）
+          git push origin mjp
+          echo "✅ 已成功将合并结果推送到远程 origin/mjp 分支"
         env:
-          # 可选：如果仓库是私有或需要特殊权限，可配置 GITHUB_TOKEN
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
