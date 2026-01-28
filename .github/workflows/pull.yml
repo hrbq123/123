@@ -1,56 +1,39 @@
-name: Sync from Upstream
+#!/usr/bin/env bash
+set -e
 
-on:
-  schedule:
-    - cron: '30 19 * * *'  # 每天北京时间 3:30 执行
-    - cron: '30 23 * * *'
-  workflow_dispatch:      # 允许手动触发
+# 确保 upstream 存在（屏蔽remove的无关错误提示，仅保留致命错误）
+if git remote | grep -q "^upstream$"; then
+  git remote remove upstream
+fi
+git remote add upstream https://github.com/LmeSzinc/AzurLaneAutoScript.git
+echo "✅ 已成功配置upstream远程仓库"
 
-jobs:
-  sync:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout your repo
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 100  # 只拉取最近100个提交（可根据需要调整）
-          ref: jp1  # 直接指定 checkout jp 分支，减少切换操作
+# 拉取上游最新代码（限制深度，只取最近100个提交）
+git fetch --depth=100 upstream master
+echo "✅ 已成功拉取上游master分支最新代码"
 
-      - name: Set up Git
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+# 确保本地 jp 分支与远程同步
+git pull --rebase origin jp1 --depth=100
+echo "✅ 已成功同步本地jp1分支与远程origin/jp1"
 
-      - name: Sync from upstream
-        id: sync
-        run: |
-          # 确保 upstream 存在
-          git remote remove upstream || true
-          git remote add upstream https://github.com/LmeSzinc/AzurLaneAutoScript.git
-          
-          # 拉取上游最新代码（限制深度，只取最近100个提交）
-          git fetch --depth=100 upstream master
-          
-          # 确保本地 jp 分支与远程同步
-          git pull --rebase origin jp1 --depth=100
-          
-          # 尝试合并（只合并上游master的最新提交）
-          if git merge --no-edit upstream/master; then
-            echo "合并成功，无冲突"
-            echo "conflict=false" >> $GITHUB_OUTPUT
-          else
-            echo "❌ 检测到合并冲突，终止同步流程"
-            echo "conflict=true" >> $GITHUB_OUTPUT
-            
-            # 输出冲突文件列表
-            conflict_files=$(git diff --name-only --diff-filter=U)
-            echo "冲突文件列表："
-            echo "$conflict_files"
-            echo "conflict_files=$conflict_files" >> $GITHUB_OUTPUT
-            
-            # 终止流程并返回错误码
-            exit 1
-          fi
-          
-          # 推送更改（仅当合并成功时执行）
-          git push origin jp1
+# 尝试合并（只合并上游master的最新提交）
+if git merge --no-edit upstream/master; then
+  echo "🎉 合并成功，无冲突"
+  echo "conflict=false" >> $GITHUB_OUTPUT
+else
+  echo "❌ 检测到合并冲突，终止同步流程"
+  echo "conflict=true" >> $GITHUB_OUTPUT
+  
+  # 输出冲突文件列表
+  conflict_files=$(git diff --name-only --diff-filter=U)
+  echo "冲突文件列表："
+  echo "$conflict_files"
+  echo "conflict_files=$conflict_files" >> $GITHUB_OUTPUT
+  
+  # 终止流程并返回错误码
+  exit 1
+fi
+
+# 推送更改（仅当合并成功时执行）
+git push origin jp1
+echo "✅ 已成功将合并结果推送到远程jp1分支"
