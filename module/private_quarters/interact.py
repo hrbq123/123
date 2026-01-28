@@ -17,6 +17,7 @@ class PQInteract(UI):
         'sirius': (PRIVATE_QUARTERS_SHIP_SIRIUS, PRIVATE_QUARTERS_PAGE_LOCALE_BEACH),
         'new_jersey': (PRIVATE_QUARTERS_SHIP_NEW_JERSEY, PRIVATE_QUARTERS_PAGE_LOCALE_LOFT),
         'taihou': (PRIVATE_QUARTERS_SHIP_TAIHOU, PRIVATE_QUARTERS_PAGE_LOCALE_LOFT),
+        'aegir': (PRIVATE_QUARTERS_SHIP_AEGIR, PRIVATE_QUARTERS_PAGE_LOCALE_LOFT),
     }
 
     def _pq_handle_dialogue(self):
@@ -215,8 +216,9 @@ class PQInteract(UI):
         """
         # Rare case in the middle of dialogue, so address
         # before initiating room exit
-        if not self.appear(PRIVATE_QUARTERS_ROOM_CHECK, offset=(20, 20)):
-            self._pq_handle_dialogue()
+        if (not self.appear(PRIVATE_QUARTERS_ROOM_CHECK, offset=(20, 20)) and
+            not self.appear(PRIVATE_QUARTERS_INTERACT, offset=(0, 60))):
+                self._pq_handle_dialogue()
 
         self.interval_clear(PRIVATE_QUARTERS_ROOM_BACK)
         self.ui_click(

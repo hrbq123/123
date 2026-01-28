@@ -414,7 +414,6 @@
       "ServerUpdate": "00:00"
     },
     "GemsFarming": {
-      "ChangeFlagship": "ship",
       "CommonCV": "any",
       "ChangeVanguard": "ship",
       "CommonDD": "any",
@@ -1397,7 +1396,7 @@
     },
     "Campaign": {
       "Name": "D3",
-      "Event": "war_archives_20231026_cn",
+      "Event": "war_archives_20221222_cn",
       "Mode": "normal",
       "UseClearMode": true,
       "UseFleetLock": true,

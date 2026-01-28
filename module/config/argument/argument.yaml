@@ -521,15 +521,12 @@ C124LargeLeveling:
     value: 3
     option: [ 3, 4, 5 ]
 GemsFarming:
-  ChangeFlagship:
-    value: ship
-    option: [ ship, ship_equip ]
   CommonCV:
     value: any
     option: [ any, langley, bogue, ranger, hermes ]
   ChangeVanguard:
     value: ship
-    option: [ disabled, ship, ship_equip ]
+    option: [ disabled, ship ]
   CommonDD:
     value: any
     option: [ any, favourite, aulick_or_foote , cassin_or_downes, z20_or_z21 ]
@@ -584,7 +581,7 @@ Coalition:
   UseRecommendFleet: true
   Mode:
     value: hard
-    option: [ easy, normal, hard, sp, ex ]
+    option: [ easy, normal, hard, sp ]
   Fleet:
     value: single
     option: [ single, multi ]
@@ -901,7 +898,7 @@ PrivateQuarters:
     TargetInteract: true
     TargetShip:
       value: anchorage
-      option: [ anchorage, noshiro, sirius, new_jersey, taihou ]
+      option: [ anchorage, noshiro, sirius, new_jersey, taihou, aegir ]
 # ==================== Daily ====================
 
 Daily:
