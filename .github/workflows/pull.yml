@@ -28,10 +28,10 @@ jobs:
           
           # 拉取最新代码
           git fetch upstream
-          git checkout --track origin/jp1 || git checkout jp1
+          git checkout --track origin/jp || git checkout jp
           
           # 尝试合并
           git merge --no-edit upstream/master
           
           # 推送更改
-          git push origin jp1
+          git push origin jp
