@@ -175,6 +175,22 @@ class ConnectionAttr:
             return 0
 
     @cached_property
+    def is_tunneled_device(self) -> bool:
+        if self.port != 5555:
+            return False
+
+        host = self.serial.split(':')[0]
+
+        if host.startswith('10.'):
+            return True
+        if host.startswith('172.'):
+            return True
+        if host.startswith('192.'):
+            return True
+
+        return False
+
+    @cached_property
     def is_mumu12_family(self):
         # 127.0.0.1:16384 + 32*n, assume 32 instances at max
         return 16384 <= self.port <= 17408
@@ -184,6 +200,7 @@ class ConnectionAttr:
         # 127.0.0.1:7555
         # 127.0.0.1:16384 + 32*n
         return self.serial == '127.0.0.1:7555' or self.is_mumu12_family
+
 
     @cached_property
     def is_ldplayer_bluestacks_family(self):
