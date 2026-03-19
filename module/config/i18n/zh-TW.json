@@ -66,10 +66,6 @@
       "name": "活動通用",
       "help": ""
     },
-    "Coalition": {
-      "name": "光影風尚-拍攝進行時",
-      "help": ""
-    },
     "Event": {
       "name": "活動圖",
       "help": ""
@@ -86,6 +82,10 @@
       "name": "深谷来信",
       "help": ""
     },
+    "Coalition": {
+      "name": "光影風尚-拍攝進行時",
+      "help": ""
+    },
     "MaritimeEscort": {
       "name": "商船護航",
       "help": ""
@@ -93,10 +93,6 @@
     "WarArchives": {
       "name": "作戰檔案",
       "help": "由於作戰檔案缺少維護，開荒功能不一定能正常使用，如果發現Alas運行異常，請手動完成開荒後使用自律尋敵功能"
-    },
-    "CoalitionSp": {
-      "name": "光影風尚-拍攝進行時SP",
-      "help": ""
     },
     "EventA": {
       "name": "活動每日A圖",
@@ -120,6 +116,10 @@
     },
     "RaidDaily": {
       "name": "共鬥活動每日",
+      "help": ""
+    },
+    "CoalitionSp": {
+      "name": "光影風尚-拍攝進行時SP",
       "help": ""
     },
     "Commission": {
@@ -378,6 +378,7 @@
       "cn_android-25": "[国服] 水仙行动",
       "cn_android-26": "[国服] 冬月计划",
       "cn_android-27": "[国服] 长弓计划",
+      "cn_android-28": "[国服] 裁决协议",
       "cn_ios-0": "[国服] 夏威夷",
       "cn_ios-1": "[国服] 珊瑚海",
       "cn_ios-2": "[国服] 中途岛",
@@ -684,7 +685,7 @@
       "coalition_20240627": "歡迎來到童心學院",
       "coalition_20250626": "迷彩都市的尋蹤者",
       "coalition_20251120": "DATE A LANE",
-      "coalition_20260122": "Light & Shadow Fashion Shoot!",
+      "coalition_20260122": "光影風尚-拍攝進行時",
       "event_20200227_cn": "Northern Overture",
       "event_20200312_cn": "斯圖爾特的硝煙",
       "event_20200326_cn": "Microlayer Medley",
@@ -765,6 +766,7 @@
       "event_20250912_cn": "起舞於天原之上",
       "event_20251023_cn": "颶風與自由群島",
       "event_20251218_cn": "響徹於天穹之音",
+      "event_20260226_cn": "春滿客棧Online",
       "raid_20200624": "特別演習埃塞克斯級(復刻)",
       "raid_20210708": "復刻穿越彼方的水線",
       "raid_20220127": "演習神秘事件調查",
@@ -775,6 +777,7 @@
       "raid_20240130": "寰昌宇定家事忙",
       "raid_20240328": "從零開始的魔王討伐之旅",
       "raid_20250116": "華裳巧展喜事長",
+      "raid_20260212": "春宴懷玉香滿庭",
       "war_archives_20180607_cn": "檔案 墨染的鋼鐵之花",
       "war_archives_20180726_cn": "檔案 光與影的鳶尾之華",
       "war_archives_20181020_en": "檔案 努力希望和計劃",
@@ -817,6 +820,7 @@
       "war_archives_20220728_cn": "檔案 雄鷹的敘事歌",
       "war_archives_20220915_cn": "檔案 紫絳槿嵐",
       "war_archives_20221222_cn": "檔案 定向折疊",
+      "war_archives_20230223_cn": "檔案 湮燼塵墟",
       "war_archives_20231026_cn": "檔案 飓風與青春之泉"
     },
     "Mode": {
@@ -909,7 +913,8 @@
       "combat_auto": "自律戰鬥",
       "combat_manual": "手動",
       "stand_still_in_the_middle": "中路站樁",
-      "hide_in_bottom_left": "躲左下角"
+      "hide_in_bottom_left": "躲左下角",
+      "hide_in_upper_left": "躲左上角"
     },
     "Fleet1Step": {
       "name": "一隊步幅",
@@ -943,7 +948,8 @@
       "combat_auto": "自律戰鬥",
       "combat_manual": "手動",
       "stand_still_in_the_middle": "中路站樁",
-      "hide_in_bottom_left": "躲左下角"
+      "hide_in_bottom_left": "躲左下角",
+      "hide_in_upper_left": "躲左上角"
     },
     "Fleet2Step": {
       "name": "二隊步幅",
@@ -1272,7 +1278,7 @@
       "easy": "簡單",
       "normal": "普通",
       "hard": "困難",
-      "ex": "ex"
+      "ex": "EX"
     },
     "UseTicket": {
       "name": "使用演習券",
@@ -1885,7 +1891,8 @@
       "help": "",
       "2": "二期科研",
       "3": "三期科研",
-      "4": "四期科研"
+      "4": "四期科研",
+      "5": "五期科研"
     },
     "ShipIndex": {
       "name": "艦船序號",
@@ -1919,7 +1926,8 @@
       "2": "二期科研",
       "3": "三期科研",
       "4": "四期科研",
-      "5": "五期科研"
+      "5": "五期科研",
+      "6": "六期科研"
     },
     "ShipIndex": {
       "name": "艦船序號",
